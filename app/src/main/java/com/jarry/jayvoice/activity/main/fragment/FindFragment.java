@@ -24,6 +24,7 @@ import a.b.c.DynamicSdkManager;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Parcelable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -48,7 +49,7 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
 @SuppressLint({ "CutPasteId", "SetJavaScriptEnabled" })
-public class FindFragment extends BaseFragment implements OnCheckedChangeListener,MainInterf.FindChild{
+public class FindFragment extends BaseFragment implements MainInterf.FindChild{
 	private View rootView;
 	LayoutInflater lin;
 	private GridView gridView;
@@ -57,11 +58,7 @@ public class FindFragment extends BaseFragment implements OnCheckedChangeListene
 	int alType = 0;//0:人物版；1：卡通版
 	List<Album> albumList = new ArrayList<Album>();
 	AlbumAdapter albumAdapter;
-	private RadioGroup mRadioGroup;
-	private RadioButton[] mRadioButtons = new RadioButton[3];
-	float typeTabWidth;
-	private float mCurrentCheckedRadioLeft;//当前被选中的RadioButton距离左侧的距离
-	private ImageView mImageView;
+
 	private ViewPager mViewPager;	//下方的可横向拖动的控件
 	private ArrayList<View> mViews;//用来存放下方滚动的layout(layout_1,layout_2,layout_3)
 	WebView newsWebView;
@@ -69,6 +66,7 @@ public class FindFragment extends BaseFragment implements OnCheckedChangeListene
 	WhatFallScrollView whatFallScrollView;
 	private MainInterf.MainView mainView;
 	private boolean canRefresh = true;
+	private TabLayout mTabLayout;
 
 	public FindFragment(MainInterf.MainView mainView) {
 		this.mainView = mainView;
@@ -87,48 +85,14 @@ public class FindFragment extends BaseFragment implements OnCheckedChangeListene
 	@Override
 	public void initView(View view) {
 		// TODO Auto-generated method stub
-		typeTabWidth = DisplayUtil.getWindowWidth(getActivity())/3;
-		mRadioGroup = (RadioGroup)view.findViewById(R.id.find_type_radioGroup);
-		mRadioButtons[0] = (RadioButton)view.findViewById(R.id.find_type_btn1);
-		mRadioButtons[1] = (RadioButton)view.findViewById(R.id.find_type_btn3);
-		mRadioButtons[2] = (RadioButton)view.findViewById(R.id.find_type_btn4);		
-		mImageView = (ImageView)view.findViewById(R.id.find_type_bottomimg);			
+		mTabLayout = (TabLayout) view.findViewById(R.id.sliding_tabs);
 		mViewPager = (ViewPager)view.findViewById(R.id.pager);
-		mRadioGroup.setOnCheckedChangeListener(this);		
-		mViewPager.setOnPageChangeListener(new MyPagerOnPageChangeListener());
 		mViewPager.setOffscreenPageLimit(3);
-		for(int i = 0;i<mRadioButtons.length;i++){
-			final int position = i;
-			mRadioButtons[i].setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-				
-				@Override
-				public void onCheckedChanged(CompoundButton arg0, boolean flag) {
-					// TODO Auto-generated method stub
-					if(flag){
-						mRadioButtons[position].setTextSize(18);
-					}else{
-						mRadioButtons[position].setTextSize(17);
-					}
-				}
-			});
-		}
+//		mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
 		iniVariable();
+		mTabLayout.setupWithViewPager(mViewPager);
 	}
 
-	public void setChecked(int type) {
-		// TODO Auto-generated method stub
-		switch (type) {
-		case 1:
-			mRadioGroup.check(R.id.find_type_btn1);
-			break;
-		case 2:
-			mRadioGroup.check(R.id.find_type_btn3);
-			break;
-		case 3:
-			mRadioGroup.check(R.id.find_type_btn4);
-			break;
-		}
-	}
 
 	@Override
 	public void getData() {
@@ -168,14 +132,12 @@ public class FindFragment extends BaseFragment implements OnCheckedChangeListene
 	
 	private void iniVariable() {
 		// TODO Auto-generated method stub
-    	mViews = new ArrayList<View>();
+    	mViews = new ArrayList<>();
     	mViews.add(getActivity().getLayoutInflater().inflate(R.layout.find_album_layout, null));
     	mViews.add(getActivity().getLayoutInflater().inflate(R.layout.find_pic_layout, null));
     	mViews.add(getActivity().getLayoutInflater().inflate(R.layout.find_news_layout, null));
     	mViewPager.setAdapter(new MyPagerAdapter());//设置ViewPager的适配器
-    	mRadioButtons[0].setChecked(true);
     	mViewPager.setCurrentItem(0);
-    	mCurrentCheckedRadioLeft = getCurrentCheckedRadioLeft();
 	}
 
 	private void showNewsData() {
@@ -295,21 +257,31 @@ public class FindFragment extends BaseFragment implements OnCheckedChangeListene
 		}
 	}
 
-	int totalItemCount;
 	
 	private class MyPagerAdapter extends PagerAdapter{
 
 		@Override
-		public void destroyItem(View v, int position, Object obj) {
-			// TODO Auto-generated method stub
-			((ViewPager)v).removeView(mViews.get(position));
+		public CharSequence getPageTitle(int position) {
+			String title = "";
+			switch (position) {
+				case 0:
+					title = getString(R.string.find_tab1);
+					break;
+				case 1:
+					title = getString(R.string.find_tab3);
+					break;
+				case 2:
+					title = getString(R.string.find_tab4);
+					break;
+			}
+			return title;
 		}
 
 		@Override
-		public void finishUpdate(View arg0) {
-			// TODO Auto-generated method stub
-			
+		public void destroyItem(ViewGroup container, int position, Object object) {
+			container.removeView(mViews.get(position));
 		}
+
 
 		@Override
 		public int getCount() {
@@ -318,71 +290,72 @@ public class FindFragment extends BaseFragment implements OnCheckedChangeListene
 		}
 
 		@Override
-		public Object instantiateItem(View v, int position) {
-			((ViewPager)v).addView(mViews.get(position));
+		public Object instantiateItem(ViewGroup container, int position) {
+			container.addView(mViews.get(position));
 			View rootView = mViews.get(position);
 			switch (position) {
-			case 0:
-				gridView = (GridView) rootView.findViewById(R.id.gridview_album);
-				changeAlTypeView = rootView.findViewById(R.id.change_album_type_view);
-				changeAlTypeTv = (TextView) rootView.findViewById(R.id.change_album_type_tv);
-				albumAdapter = new AlbumAdapter();
-				gridView.setAdapter(albumAdapter);
-				gridView.setOnScrollListener(new AbsListView.OnScrollListener() {
-					@Override
-					public void onScrollStateChanged(AbsListView view, int scrollState) {
-						if (gridView != null && gridView.getChildCount() > 0) {
-							// check if the first item of the list is visible
-							boolean firstItemVisible = gridView.getFirstVisiblePosition() == 0;
-							// check if the top of the first item is visible
-							boolean topOfFirstItemVisible = gridView.getChildAt(0).getTop() == 0;
-							// enabling or disabling the refresh layout
-							canRefresh = firstItemVisible && topOfFirstItemVisible;
+				case 0:
+					gridView = (GridView) rootView.findViewById(R.id.gridview_album);
+					changeAlTypeView = rootView.findViewById(R.id.change_album_type_view);
+					changeAlTypeTv = (TextView) rootView.findViewById(R.id.change_album_type_tv);
+					albumAdapter = new AlbumAdapter();
+					gridView.setAdapter(albumAdapter);
+					gridView.setOnScrollListener(new AbsListView.OnScrollListener() {
+						@Override
+						public void onScrollStateChanged(AbsListView view, int scrollState) {
+							if (gridView != null && gridView.getChildCount() > 0) {
+								// check if the first item of the list is visible
+								boolean firstItemVisible = gridView.getFirstVisiblePosition() == 0;
+								// check if the top of the first item is visible
+								boolean topOfFirstItemVisible = gridView.getChildAt(0).getTop() == 0;
+								// enabling or disabling the refresh layout
+								canRefresh = firstItemVisible && topOfFirstItemVisible;
+							}
+							mainView.setEnableRefresh(canRefresh);
 						}
-						mainView.setEnableRefresh(canRefresh);
-					}
 
-					@Override
-					public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+						@Override
+						public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
-					}
-				});
-				changeAlTypeView.setOnClickListener(FindFragment.this);
-				mainView.refreshData();
-				break;
-			case 1:
-				View banner = DynamicSdkManager.getInstance(mActivity).getBanner(mActivity);
-			    LinearLayout adLayout=(LinearLayout)rootView.findViewById(R.id.adLayout);	
-			    adLayout.removeAllViews();
-			    if(banner!=null)
-			    	adLayout.addView(banner);
-				whatFallScrollView = (WhatFallScrollView) rootView.findViewById(R.id.my_scroll_view);
-				getPicData();
-				break;
-			case 2:
-				View banner2 = DynamicSdkManager.getInstance(mActivity).getBanner(mActivity);
-			    LinearLayout adLayout2=(LinearLayout)rootView.findViewById(R.id.adLayout2);	
-			    adLayout2.removeAllViews();
-			    if(banner2!=null)
-			    	adLayout2.addView(banner2);
-				newsWebView = (WebView) rootView.findViewById(R.id.view_webview);
-				newsWebView.getSettings().setJavaScriptEnabled(true); 
-				newsWebView.setWebViewClient(new WebViewClient(){
-			         @Override
-			         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-			        	 System.out.println(url);
-			        	 if(url.startsWith("http://www.jay520.com.cn")||url.startsWith("http://m.jay520.com")){
-			        		 return true;
-			        	 }
-			             view.loadUrl(url);   //在当前的webview中跳转到新的url
-			             return true;
-			         }
-			    });
-				showNewsData();
-				break;
+						}
+					});
+					changeAlTypeView.setOnClickListener(FindFragment.this);
+					mainView.refreshData();
+					break;
+				case 1:
+					View banner = DynamicSdkManager.getInstance(mActivity).getBanner(mActivity);
+					LinearLayout adLayout=(LinearLayout)rootView.findViewById(R.id.adLayout);
+					adLayout.removeAllViews();
+					if(banner!=null)
+						adLayout.addView(banner);
+					whatFallScrollView = (WhatFallScrollView) rootView.findViewById(R.id.my_scroll_view);
+					getPicData();
+					break;
+				case 2:
+					View banner2 = DynamicSdkManager.getInstance(mActivity).getBanner(mActivity);
+					LinearLayout adLayout2=(LinearLayout)rootView.findViewById(R.id.adLayout2);
+					adLayout2.removeAllViews();
+					if(banner2!=null)
+						adLayout2.addView(banner2);
+					newsWebView = (WebView) rootView.findViewById(R.id.view_webview);
+					newsWebView.getSettings().setJavaScriptEnabled(true);
+					newsWebView.setWebViewClient(new WebViewClient(){
+						@Override
+						public boolean shouldOverrideUrlLoading(WebView view, String url) {
+							System.out.println(url);
+							if(url.startsWith("http://www.jay520.com.cn")||url.startsWith("http://m.jay520.com")){
+								return true;
+							}
+							view.loadUrl(url);   //在当前的webview中跳转到新的url
+							return true;
+						}
+					});
+					showNewsData();
+					break;
 			}
 			return rootView;
 		}
+
 
 		@Override
 		public boolean isViewFromObject(View arg0, Object arg1) {
@@ -401,84 +374,9 @@ public class FindFragment extends BaseFragment implements OnCheckedChangeListene
 			// TODO Auto-generated method stub
 			return null;
 		}
-
-		@Override
-		public void startUpdate(View arg0) {
-			// TODO Auto-generated method stub
-			
-		}
 		
 	}
-	/**
-	 * ViewPager的PageChangeListener(页面改变的监听器)
-	 * @author zj
-	 * 2012-5-24 下午3:14:27
-	 */
-	private class MyPagerOnPageChangeListener implements OnPageChangeListener{
 
-		@Override
-		public void onPageScrollStateChanged(int arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void onPageScrolled(int arg0, float arg1, int arg2) {
-			// TODO Auto-generated method stub
-			
-		}
-		/**
-		 * 滑动ViewPager的时候,让上方的HorizontalScrollView自动切换
-		 */
-		@Override
-		public void onPageSelected(int position) {
-			// TODO Auto-generated method stub
-			//Log.i("zj", "position="+position);
-			mRadioButtons[position].setChecked(true);
-		}
-		
-	}
-	@Override
-	public void onCheckedChanged(RadioGroup arg0, int checkedId) {
-		// TODO Auto-generated method stub
-		if (checkedId == R.id.find_type_btn1) {
-			doImgAnimation(0);
-			mViewPager.setCurrentItem(0);//让下方ViewPager跟随上面的HorizontalScrollView切换
-		}else if (checkedId == R.id.find_type_btn3) {
-			doImgAnimation(typeTabWidth);			
-			mViewPager.setCurrentItem(1);
-		}else if (checkedId == R.id.find_type_btn4) {
-			doImgAnimation(typeTabWidth*2);		
-			mViewPager.setCurrentItem(2);
-		}
-		mCurrentCheckedRadioLeft = getCurrentCheckedRadioLeft();//更新当前蓝色横条距离左边的距离
-	}
-	
-	private void doImgAnimation(float toX) {
-		// TODO Auto-generated method stub
-		if(toX==mCurrentCheckedRadioLeft)return;
-		AnimationSet _AnimationSet = new AnimationSet(true);
-		TranslateAnimation _TranslateAnimation;
-		_TranslateAnimation = new TranslateAnimation(mCurrentCheckedRadioLeft, toX, 0f, 0f);
-		_AnimationSet.addAnimation(_TranslateAnimation);
-		_AnimationSet.setFillBefore(true);
-		_AnimationSet.setFillAfter(true);
-		_AnimationSet.setDuration(100);
-		mImageView.startAnimation(_AnimationSet);
-	}
-	
-	private float getCurrentCheckedRadioLeft() {
-		// TODO Auto-generated method stub
-		switch (mRadioGroup.getCheckedRadioButtonId()) {
-		case R.id.find_type_btn1:
-			return 0;
-		case R.id.find_type_btn3:
-			return typeTabWidth;
-		case R.id.find_type_btn4:
-			return typeTabWidth*2;
-		}		
-		return 0f;
-	}
 
 	@Override
 	public Fragment getFragment() {

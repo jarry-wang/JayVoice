@@ -186,7 +186,7 @@
 	                    android:textSize="@dimen/content_textsize_m"
 	                    android:layout_marginTop="10dp"
 	                    android:textColor="@color/white"
-	                    android:text="@string/ad"
+	                    android:text="@string/news"
 	                    />
         	    </LinearLayout>
         	</RelativeLayout>

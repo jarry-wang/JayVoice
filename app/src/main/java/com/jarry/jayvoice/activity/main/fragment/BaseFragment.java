@@ -5,6 +5,7 @@ import java.lang.ref.SoftReference;
 
 import cn.join.android.net.imgcache.ImageFetcher;
 import cn.join.android.net.imgcache.SharedImageFetcher;
+import cn.join.android.util.ToastUtil;
 
 import com.jarry.jayvoice.activity.main.MainActivity;
 import com.jarry.jayvoice.MyApplication;
@@ -44,6 +45,7 @@ public abstract class BaseFragment extends Fragment implements OnClickListener,N
 	MyApplication application;
 	public Tencent mTencent;
 	public IWXAPI iwxapi;
+	public ToastUtil toastUtil;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -55,7 +57,7 @@ public abstract class BaseFragment extends Fragment implements OnClickListener,N
 		prefUtil = SharedPrefUtil.getInstance(getActivity().getApplicationContext());
 		mDataBusiness = new DataBusiness(getActivity());
 		mGetDataBusiness = new GetDataBusiness(getActivity());
-
+		toastUtil = new ToastUtil(mActivity);
 	}
 	
 	@Override

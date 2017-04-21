@@ -5,13 +5,21 @@ import java.util.List;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -21,6 +29,7 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 
 import com.jarry.jayvoice.activity.main.MainActivity;
 import com.jarry.jayvoice.R;
+import com.jarry.jayvoice.activity.main.fragment.FindFragment;
 import com.jarry.jayvoice.bean.Album;
 import com.jarry.jayvoice.bean.Singer;
 import com.jarry.jayvoice.bean.Song;
@@ -28,20 +37,25 @@ import com.jarry.jayvoice.core.GetDataBusiness.ResSongListHandler;
 import com.jarry.jayvoice.util.DisplayUtil;
 import com.jarry.jayvoice.util.StringUtils;
 import com.jarry.jayvoice.util.Utility;
+import com.jarry.jayvoice.widget.WhatFallScrollView;
 
-public class AlbumActivity extends BaseActivity implements OnCheckedChangeListener{
+import a.b.c.DynamicSdkManager;
+
+public class AlbumActivity extends BaseActivity{
+
 
 	
-	private RadioButton[] mRadioButtons = new RadioButton[2];
-	
-	private ImageView albumIv,headIv,albumTabIv;
-//	private ViewPager mViewPager;
-	private RelativeLayout infoView;
+//	private ImageView albumIv,headIv,albumTabIv;
+	private ViewPager mViewPager;
+	private ImageView albumIv;
 	private ArrayList<View> mViews;//用来存放下方滚动的layoutlayout_1,layout_2
 	ListView albumListView;
-	TextView albumNameView,albumLanguageView,publishTimeView,albumDescView;
-	TextView singerNameTv,topPublishTv;
-	private Album album; 
+	TextView albumNameView;
+	TextView albumLanguageView;
+	TextView publishTimeView;
+	TextView albumDescView;
+	private Album album;
+	private TabLayout tabLayout;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -53,37 +67,19 @@ public class AlbumActivity extends BaseActivity implements OnCheckedChangeListen
 	public void initView() {
 		// TODO Auto-generated method stub
 		setTitle("专辑");
-		typeTabWidth = DisplayUtil.getWindowWidth(this)/2;
-		mRadioGroup = (RadioGroup)findViewById(R.id.album_type_radioGroup);
-		mRadioButtons[0] = (RadioButton)findViewById(R.id.album_type_btn1);
-		mRadioButtons[1] = (RadioButton)findViewById(R.id.album_type_btn2);	
-		headIv = (ImageView) findViewById(R.id.album_headimg);
-		singerNameTv = (TextView) findViewById(R.id.album_top_nameview);
-		topPublishTv = (TextView) findViewById(R.id.album_top_timeview);
-		albumIv = (ImageView) findViewById(R.id.iv);
-		mTypeImageView = (ImageView)findViewById(R.id.album_type_bottomimg);	
-		mRadioGroup.setOnCheckedChangeListener(this);
-		infoView = (RelativeLayout) findViewById(R.id.album_info_view);
-		albumListView = (ListView) findViewById(R.id.album_listview);
-		albumNameView = (TextView) findViewById(R.id.album_name_textview);
-		albumLanguageView = (TextView) findViewById(R.id.album_language_textview);
-		publishTimeView = (TextView) findViewById(R.id.album_publishtime_textview);
-		albumDescView = (TextView) findViewById(R.id.album_desc_textview);
-		albumTabIv = (ImageView) findViewById(R.id.album_imageview);
-		albumTabIv.setVisibility(View.GONE);
-		doTypeTextSize(mRadioButtons);
+		tabLayout = (TabLayout) findViewById(R.id.tablayout);
+		mViewPager = (ViewPager) findViewById(R.id.viewpager);
+		albumIv = (ImageView) findViewById(R.id.top_img);
 	}
 	
 	private void iniVariable() {
 		// TODO Auto-generated method stub
-		mViews = new ArrayList<View>();
-    	mViews.add(findViewById(R.id.album_info_view1));
-    	mViews.add(findViewById(R.id.album_info_view2));
-//    	mViewPager.setAdapter(new MyPagerAdapter());//设置ViewPager的适配器
-    	mRadioButtons[0].setChecked(true);
-//    	mViewPager.setCurrentItem(0);
-    	mCurrentCheckedRadioLeft = getCurrentCheckedRadioLeft();
-    	switchInfoContent(0);
+		mViews = new ArrayList<>();
+    	mViews.add(getLayoutInflater().inflate(R.layout.album_tab_layout1, null));
+    	mViews.add(getLayoutInflater().inflate(R.layout.album_tab_layout2, null));
+    	mViewPager.setAdapter(new MyPagerAdapter());//设置ViewPager的适配器
+    	mViewPager.setCurrentItem(0);
+		tabLayout.setupWithViewPager(mViewPager);
 	}
 
 	@Override
@@ -92,8 +88,6 @@ public class AlbumActivity extends BaseActivity implements OnCheckedChangeListen
 		album = (Album) getIntent().getSerializableExtra("album");
 		if(album!=null){
 			showAlbumInfo();
-			getAlbumListData();
-			getAlbumTabData();
 		}		
 	}
 	
@@ -141,13 +135,13 @@ public class AlbumActivity extends BaseActivity implements OnCheckedChangeListen
 				mFetcher.loadImage(imgUrl, albumIv);
 			}
 		}	
-		Singer singer = album.getSinger();
-		if(singer!=null){
-			if(singer.getUserPic()!=null)
-				mFetcher.loadImage(singer.getUserPic().getFileUrl(this), headIv);
-			singerNameTv.setText(singer.getName());			
-		}
-		topPublishTv.setText(album.getPublishTime());	
+//		Singer singer = album.getSinger();
+//		if(singer!=null){
+//			if(singer.getUserPic()!=null)
+//				mFetcher.loadImage(singer.getUserPic().getFileUrl(this), headIv);
+//			singerNameTv.setText(singer.getName());
+//		}
+//		topPublishTv.setText(album.getPublishTime());
 	}
 
 	@Override
@@ -156,48 +150,65 @@ public class AlbumActivity extends BaseActivity implements OnCheckedChangeListen
 		return R.layout.activity_album;
 	}
 
-	@Override
-	public void onCheckedChanged(RadioGroup arg0, int checkedId) {
-		// TODO Auto-generated method stub
-		int position = 0;
-		if (checkedId == R.id.album_type_btn1) {
-			position = 0;
-			doImgAnimation(0);			
-		}else if (checkedId == R.id.album_type_btn2) {
-			position = 1;
-			doImgAnimation(typeTabWidth);			
+
+
+
+	private class MyPagerAdapter extends PagerAdapter {
+
+		@Override
+		public CharSequence getPageTitle(int position) {
+			String title = "";
+			switch (position) {
+				case 0:
+					title = getString(R.string.album_tab1);
+					break;
+				case 1:
+					title = getString(R.string.album_tab2);
+					break;
+			}
+			return title;
 		}
-		switchInfoContent(position);
-		mCurrentCheckedRadioLeft = getCurrentCheckedRadioLeft();//更新当前蓝色横条距离左边的距离
+
+		@Override
+		public void destroyItem(ViewGroup container, int position, Object object) {
+			container.removeView(mViews.get(position));
+		}
+
+		@Override
+		public boolean isViewFromObject(View view, Object object) {
+			return view == object;
+		}
+
+
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return mViews.size();
+		}
+
+		@Override
+		public Object instantiateItem(ViewGroup container, int position) {
+			container.addView(mViews.get(position));
+			View rootView = mViews.get(position);
+			switch (position) {
+				case 0:
+					albumListView = (ListView) rootView.findViewById(R.id.album_listview);
+					getAlbumListData();
+					break;
+				case 1:
+					albumNameView = (TextView) findViewById(R.id.album_name_textview);
+					albumLanguageView = (TextView) findViewById(R.id.album_language_textview);
+					publishTimeView = (TextView) findViewById(R.id.album_publishtime_textview);
+					albumDescView = (TextView) findViewById(R.id.album_desc_textview);
+					getAlbumTabData();
+					break;
+			}
+			return rootView;
+		}
 	}
 
-	private void switchInfoContent(int index) {
-		// TODO Auto-generated method stub
-		switch (index) {
-		case 0:
-			mViews.get(0).setVisibility(View.VISIBLE);
-			mViews.get(1).setVisibility(View.GONE);
-			break;
-		case 1:
-			mViews.get(1).setVisibility(View.VISIBLE);
-			mViews.get(0).setVisibility(View.GONE);
-			break;
-		}
-		
-	}
-	
-	private float getCurrentCheckedRadioLeft() {
-		// TODO Auto-generated method stub
-		switch (mRadioGroup.getCheckedRadioButtonId()) {
-		case R.id.album_type_btn1:
-			return 0;
-		case R.id.album_type_btn2:
-			return typeTabWidth;
-		}		
-		return 0f;
-	}
-	
-	class SongAdapter extends BaseAdapter{
+
+		class SongAdapter extends BaseAdapter{
 
 		List<Song> songs = new ArrayList<Song>();
 		public SongAdapter(List<Song> songs){

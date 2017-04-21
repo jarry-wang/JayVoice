@@ -14,16 +14,10 @@
         android:layout_height="wrap_content"        
         android:layout_centerVertical="true"
         >
-		<View android:layout_width="5dp"
-		    android:layout_height="match_parent"
-		    android:background="@color/greentab"
-		    
-		    />
         <TextView
             android:id="@+id/textView_album_singer_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
             android:textSize="@dimen/content_textsize_l"
             android:visibility="gone"
             android:text="周杰伦" />

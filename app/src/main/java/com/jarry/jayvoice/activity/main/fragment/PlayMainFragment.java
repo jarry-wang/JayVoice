@@ -585,7 +585,7 @@ public class PlayMainFragment extends BaseFragment implements MainInterf.PlayMai
 								@Override
 								public void onSuccess() {
 									// TODO Auto-generated method stub
-									showToast("取消收藏成功");
+									toastUtil.showToast("取消收藏成功");
 									userManager.delOneCollection(currentSong);
 									showCollection(false);
 								}
@@ -593,7 +593,7 @@ public class PlayMainFragment extends BaseFragment implements MainInterf.PlayMai
 								@Override
 								public void onError(int errorCode, String msg) {
 									// TODO Auto-generated method stub
-									showToast("取消收藏失败:"+msg);
+									toastUtil.showToast("取消收藏失败:"+msg);
 								}
 							});
 						}
@@ -605,7 +605,7 @@ public class PlayMainFragment extends BaseFragment implements MainInterf.PlayMai
 						@Override
 						public void onSuccess() {
 							// TODO Auto-generated method stub
-							showToast("收藏成功");
+							toastUtil.showToast("收藏成功");
 							userManager.addOneCollection(currentSong);
 							showCollection(true);
 						}
@@ -613,7 +613,7 @@ public class PlayMainFragment extends BaseFragment implements MainInterf.PlayMai
 						@Override
 						public void onError(int errorCode, String msg) {
 							// TODO Auto-generated method stub
-							showToast("收藏失败:"+msg);
+							toastUtil.showToast("收藏失败:"+msg);
 						}
 					});
 				};
@@ -631,7 +631,7 @@ public class PlayMainFragment extends BaseFragment implements MainInterf.PlayMai
 			String title = "";
 			if(currentSong.getSinger()!=null){
 				title = currentSong.getName();
-				content = currentSong.getSinger().getName()+"\n(奔跑吧小浪奔跑吧音乐)";
+				content = currentSong.getSinger().getName()+"\n(奔跑吧音乐)";
 			}
 			if(currentSong.getSong()!=null){
 				if (!recommondWindow.isShowing()) {

@@ -25,7 +25,10 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.AnimationSet;
@@ -37,8 +40,9 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public abstract class BaseActivity extends Activity implements OnClickListener,activityInterface{
+public abstract class BaseActivity extends AppCompatActivity implements OnClickListener,activityInterface{
 
+	public Toolbar toolbar;
 	public TextView txtTopBack;
 	public TextView txtTitle;
 	public TextView txtRight;
@@ -73,6 +77,13 @@ public abstract class BaseActivity extends Activity implements OnClickListener,a
 		txtTopBack =(TextView) findViewById(R.id.menu_last_view);
 		txtTitle = (TextView) findViewById(R.id.menu_title);
 		txtRight = (TextView) findViewById(R.id.menu_right_btn);
+		toolbar = (Toolbar) findViewById(R.id.toolbar);
+		if (toolbar != null){
+			setSupportActionBar(toolbar);
+			getSupportActionBar().setDisplayShowTitleEnabled(false);
+			txtTitle = (TextView) findViewById(R.id.toolbar_title_tv);
+			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		}
 	}
 	
 	private void initData(){
@@ -89,7 +100,8 @@ public abstract class BaseActivity extends Activity implements OnClickListener,a
 	}
 	
 	public void setTitle(String text){
-		txtTitle.setText(text);
+		if (txtTitle != null)
+			txtTitle.setText(text);
 	}
 	
 	
@@ -107,7 +119,17 @@ public abstract class BaseActivity extends Activity implements OnClickListener,a
 	public void onBack(View v){
 	    onBackPressed();
 	}
-	
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case android.R.id.home:
+				finish();
+				break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
@@ -227,44 +249,5 @@ public abstract class BaseActivity extends Activity implements OnClickListener,a
     	View emptyView = findViewById(R.id.empty_view);
     	emptyView.setVisibility(View.GONE);
 	}
-    
-    /**
-     * 顶部有分类信息
-     */
-    public RadioGroup mRadioGroup;
-	public float typeTabWidth;
-	public float mCurrentCheckedRadioLeft;//当前被选中的RadioButton距离左侧的距离
-	public ImageView mTypeImageView;
-	
-	public void doTypeTextSize(final RadioButton[] mRadioButtons) {
-		// TODO Auto-generated method stub
-		for(int i = 0;i<mRadioButtons.length;i++){
-			final int position = i;
-			mRadioButtons[i].setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-				
-				@Override
-				public void onCheckedChanged(CompoundButton arg0, boolean flag) {
-					// TODO Auto-generated method stub
-					if(flag){
-						mRadioButtons[position].setTextSize(18);
-					}else{
-						mRadioButtons[position].setTextSize(17);
-					}
-				}
-			});
-		}
-	}
-	
-	public void doImgAnimation(float toX) {
-		// TODO Auto-generated method stub
-		if(toX==mCurrentCheckedRadioLeft)return;
-		AnimationSet _AnimationSet = new AnimationSet(true);
-		TranslateAnimation _TranslateAnimation;
-		_TranslateAnimation = new TranslateAnimation(mCurrentCheckedRadioLeft, toX, 0f, 0f);
-		_AnimationSet.addAnimation(_TranslateAnimation);
-		_AnimationSet.setFillBefore(true);
-		_AnimationSet.setFillAfter(true);
-		_AnimationSet.setDuration(100);
-		mTypeImageView.startAnimation(_AnimationSet);
-	}
+
 }

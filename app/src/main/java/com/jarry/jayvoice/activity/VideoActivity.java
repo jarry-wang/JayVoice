@@ -10,11 +10,14 @@ import com.jarry.jayvoice.bean.Vedio;
 import com.jarry.jayvoice.core.GetDataBusiness.ResVideoListHandler;
 import com.jarry.jayvoice.util.DisplayUtil;
 import com.jarry.jayvoice.util.ListUtil;
+import com.jarry.jayvoice.util.Logger;
 import com.jarry.jayvoice.util.StringUtils;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,7 +34,7 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 
 
 
-public class VideoActivity extends PullGridViewBaseActivity implements OnCheckedChangeListener{
+public class VideoActivity extends PullGridViewBaseActivity implements TabLayout.OnTabSelectedListener{
 	
 	MyAdapter adapter;
 	List<Vedio> videos = new ArrayList<Vedio>();
@@ -39,8 +42,8 @@ public class VideoActivity extends PullGridViewBaseActivity implements OnChecked
 	int videoTypeId;
 	String typeTitle;
 	int typeTab;
-	private RadioButton[] mRadioButtons = new RadioButton[2];
 	List<Vedio> hotVedios,newVedios;
+	private TabLayout tabLayout;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -51,18 +54,17 @@ public class VideoActivity extends PullGridViewBaseActivity implements OnChecked
 	
 	@Override
 	public void initView() {
-		typeTabWidth = DisplayUtil.getWindowWidth(this)/2;
-		mRadioGroup = (RadioGroup)findViewById(R.id.video_type_radioGroup);
-		mRadioButtons[0] = (RadioButton)findViewById(R.id.video_type_btn1);
-		mRadioButtons[1] = (RadioButton)findViewById(R.id.video_type_btn2);
+		tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
 		mGridView = (GridView) findViewById(R.id.content_view);
-		mTypeImageView = (ImageView)findViewById(R.id.video_type_bottomimg);	
-		mRadioGroup.setOnCheckedChangeListener(this);
-		doTypeTextSize(mRadioButtons);
 		adapter = new MyAdapter(this);
 		mGridView.setAdapter(adapter);
 		setEmptyName("暂无资源");
 		mFetcher.setLoadingImage(R.color.white);
+		TabLayout.Tab tab1 = tabLayout.newTab().setText(getString(R.string.video_tab1));
+		tabLayout.addTab(tab1);
+		TabLayout.Tab tab2 = tabLayout.newTab().setText(getString(R.string.video_tab2));
+		tabLayout.addTab(tab2);
+		tabLayout.setOnTabSelectedListener(this);
 	}
 
 	@Override
@@ -170,7 +172,25 @@ public class VideoActivity extends PullGridViewBaseActivity implements OnChecked
 		// TODO Auto-generated method stub
 		super.onClick(view);		
 	}
-	
+
+	@Override
+	public void onTabSelected(TabLayout.Tab tab) {
+		Logger.d("onTabSelected---position="+tab.getPosition());
+		int position = tab.getPosition();
+		typeTab = position;
+		getVideoType(typeTab);
+	}
+
+	@Override
+	public void onTabUnselected(TabLayout.Tab tab) {
+
+	}
+
+	@Override
+	public void onTabReselected(TabLayout.Tab tab) {
+
+	}
+
 	class MyAdapter extends BaseAdapter {
 		Context context;
 
@@ -251,34 +271,6 @@ public class VideoActivity extends PullGridViewBaseActivity implements OnChecked
 	}
 
 
-	@Override
-	public void onCheckedChanged(RadioGroup arg0, int checkedId) {
-		// TODO Auto-generated method stub
-		int position = 0;
-		if (checkedId == R.id.video_type_btn1) {
-			position = 0;
-			doImgAnimation(0);
-			typeTab = 0;
-			getVideoType(typeTab);
-		}else if (checkedId == R.id.video_type_btn2) {
-			position = 1;
-			doImgAnimation(typeTabWidth);
-			typeTab = 1;
-			getVideoType(typeTab);
-		}
-		mCurrentCheckedRadioLeft = getCurrentCheckedRadioLeft();//更新当前蓝色横条距离左边的距离
-	}
-	
-	private float getCurrentCheckedRadioLeft() {
-		// TODO Auto-generated method stub
-		switch (mRadioGroup.getCheckedRadioButtonId()) {
-		case R.id.video_type_btn1:
-			return 0;
-		case R.id.video_type_btn2:
-			return typeTabWidth;
-		}		
-		return 0f;
-	}
 
 	
 	
