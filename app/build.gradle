@@ -36,9 +36,9 @@ android {
     signingConfigs {
         debug {
             try {
-                storeFile file("E:/android-workspace/JayVoice/jayvoice.keystore")
+                storeFile file("E:/android-workspace/jayvoice.keystore")
                 storePassword DEBUG_KEYSTORE_PWD
-                keyAlias "androiddebugkey"
+                keyAlias "jarryjay"
                 keyPassword DEBUG_KEY_PWD
             } catch (ex) {
                 throw new InvalidUserDataException("you should define DEBUG_KEYSTORE_PWD and DEBUG_KEY_PWD")
