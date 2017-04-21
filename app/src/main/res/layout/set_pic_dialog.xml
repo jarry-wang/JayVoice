@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:paddingTop="@dimen/edge_padding_size_l" 
+    android:orientation="vertical"
+    >
+    <TextView
+        android:id="@+id/textView_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/set_pic_info"
+        android:textColor="@color/black"
+        android:paddingBottom="@dimen/edge_padding_size_l"
+        android:layout_marginLeft="@dimen/left_padding"
+        android:gravity="center"
+        android:textSize="@dimen/title_textsize" />
+    <View android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/lightgray"       
+        />
+     <TextView
+        android:id="@+id/textView_pic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/list_top_padding_large"
+        android:paddingBottom="@dimen/list_bottom_padding_large"
+        android:text="@string/set_pic_localpic"
+        android:gravity="center"
+        android:background="@drawable/list_selector_bg"
+        android:textColor="@color/greentop"
+        android:textSize="@dimen/title_textsize" />
+     <View android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/lightgray"       
+        />
+     <TextView
+        android:id="@+id/textView_pz"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/list_top_padding_large"
+        android:paddingBottom="@dimen/list_bottom_padding_large"
+        android:text="@string/set_pic_pz"
+        android:textSize="@dimen/title_textsize"
+        android:background="@drawable/list_selector_bg"
+        android:textColor="@color/greentop"
+        android:gravity="center" />
+     <View android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/lightgray"       
+        />
+	
+	<TextView
+            android:id="@+id/textView_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/list_top_padding_large"
+            android:paddingBottom="@dimen/list_bottom_padding_large"
+        	android:layout_marginTop="@dimen/margin_top_m"
+            android:background="@drawable/list_selector_bg"
+            android:gravity="center"
+            android:text="@string/cancel"
+            android:textColor="@color/greentop"
+            android:textSize="@dimen/title_textsize" />
+
+   
+
+</LinearLayout>

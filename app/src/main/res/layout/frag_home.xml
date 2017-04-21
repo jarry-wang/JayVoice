@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/anim_view"
+     >
+
+    <include
+        android:id="@+id/home_play_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        layout="@layout/home_play_main"/>
+	<View  
+        android:id="@+id/webview_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#b0000000"
+        android:focusable="false"
+        android:visibility="invisible"
+        />
+</RelativeLayout>

@@ -1,0 +1,113 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+<include layout="@layout/title"/>
+<com.jarry.jayvoice.widget.PullLayout 
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <RelativeLayout
+            android:id="@+id/rl_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@+id/iv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/xk_bg" />
+
+            <com.jarry.jayvoice.widget.EyeView
+                android:id="@+id/ev"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/selector_bg" >
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/song_recognition_icon_light" />
+            </com.jarry.jayvoice.widget.EyeView>
+
+            <LinearLayout
+                android:id="@+id/me_info_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+				<cn.join.android.ui.widget.CircleImageView
+			        android:id="@+id/collec_headimg"
+			        android:layout_width="60dp"
+			        android:layout_height="60dp"
+			        android:src="@drawable/userpic"
+			         />
+                <TextView
+                    android:id="@+id/collec_nameview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:gravity="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/title_textsize" />
+
+            </LinearLayout>
+        </RelativeLayout>
+		<!-- 
+        <FrameLayout
+            android:id="@+id/fl_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/rl_top"
+            android:background="#F4F4F4" >
+
+            
+        </FrameLayout> -->
+        <LinearLayout
+                android:id="@+id/ll_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/rl_top"
+                android:orientation="vertical"
+                android:paddingBottom="20dp"
+                >                        
+        <ListView 
+            android:id="@+id/collec_listview"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"	
+		    android:listSelector="@color/transparent"    
+		    >            
+        </ListView>
+		</LinearLayout>
+        <TextView
+            android:id="@+id/tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/selector_bg"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:text="BlueMor"
+            android:textSize="25sp"
+            android:visibility="gone"
+             />
+    </RelativeLayout>
+
+</com.jarry.jayvoice.widget.PullLayout>
+</LinearLayout>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:paddingTop="@dimen/edge_padding_size_l"
+    android:paddingBottom="@dimen/edge_padding_size_m"
+    android:background="@color/white"
+    android:orientation="vertical" >
+	<TextView android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="@string/sharemusicto"
+	    android:textSize="@dimen/content_textsize_l"
+	    />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/edge_padding_size_l"
+         >
+     <LinearLayout
+        android:id="@+id/qq_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        >
+	    <ImageView
+	        android:id="@+id/imageView_qqfriend_img"
+	        android:layout_width="@dimen/invitation_icon_size"
+	        android:layout_height="@dimen/invitation_icon_size"       
+	        android:src="@drawable/icon_qq" />
+	    <TextView 
+	        android:id="@+id/textview_qq_name"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="@dimen/content_textsize_ms"
+	        android:layout_marginTop="@dimen/margin_top_m"
+	        android:text="@string/qq_friends"
+	        android:textColor="@color/text_bg"
+	        />    
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/weixin_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        >
+	    <ImageView
+	        android:id="@+id/imageView_weixin_img"
+	        android:layout_width="@dimen/invitation_icon_size"
+	        android:layout_height="@dimen/invitation_icon_size"       
+	        android:src="@drawable/icon_weixin" />
+	    <TextView 
+	        android:id="@+id/textview_weixin_name"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="@dimen/content_textsize_ms"
+	        android:layout_marginTop="@dimen/margin_top_m"
+	        android:text="@string/wx_friends"
+	        android:textColor="@color/text_bg"
+	        />    
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/pyq_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        >
+	    <ImageView
+	        android:id="@+id/imageView_pyq_img"
+	        android:layout_width="@dimen/invitation_icon_size"
+	        android:layout_height="@dimen/invitation_icon_size"       
+	        android:src="@drawable/icon_pyq" />
+	    <TextView 
+	        android:id="@+id/textview_pyq_name"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="@dimen/content_textsize_ms"
+	        android:layout_marginTop="@dimen/margin_top_m"
+	        android:text="@string/wx_pyq"
+	        android:textColor="@color/text_bg"
+	        />    
+    </LinearLayout>
+    </LinearLayout>
+
+
+</LinearLayout>

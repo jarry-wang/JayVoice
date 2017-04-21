@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" 
+    >
+<RelativeLayout 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+	<RelativeLayout
+	    android:id="@+id/song_listitem_topview"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="vertical" 
+	    android:paddingLeft="@dimen/edge_padding_size_l"
+	    android:paddingRight="@dimen/edge_padding_size_l"
+	    android:paddingTop="@dimen/edge_padding_size_m"
+	    android:paddingBottom="@dimen/edge_padding_size_m"
+	    >
+    <TextView
+        android:id="@+id/song_listitem_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:textSize="@dimen/title_textsize"
+        android:textColor="@color/gray"
+        android:text="01" />
+
+    <TextView
+        android:id="@+id/song_listitem_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/song_listitem_num"
+        android:layout_marginLeft="15dp"
+        android:textSize="@dimen/title_textsize"
+        android:textColor="@color/text_bg"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/song_listitem_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/song_listitem_name"
+        android:layout_below="@+id/song_listitem_name"
+        android:layout_marginTop="2dp"
+        android:textSize="@dimen/content_textsize_m"
+        android:textColor="@color/gray"
+         >
+    </TextView>
+
+    <ImageView
+        android:id="@+id/song_listitem_right"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:padding="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_todown" />
+	</RelativeLayout>
+	<LinearLayout
+	    android:id="@+id/song_listitem_controlview" 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/song_listitem_topview"
+	    android:paddingLeft="@dimen/edge_padding_size_xl"
+	    android:paddingRight="@dimen/edge_padding_size_xl"
+	    android:paddingTop="@dimen/edge_padding_size_m"
+	    android:paddingBottom="@dimen/edge_padding_size_m"
+	    android:background="#3F3F3F"
+	    android:gravity="right|center_vertical"
+	    android:orientation="horizontal"
+	    android:visibility="gone"
+	    >
+	    <LinearLayout 
+	        android:id="@+id/song_listitem_delview"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:gravity="center"
+	        android:orientation="vertical"
+	        >
+	        <ImageView 
+	            android:layout_width="20dp"
+	            android:layout_height="20dp"
+	            android:background="@drawable/ic_delete"
+	            />
+	        <TextView
+		        android:id="@+id/song_listitem_del"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="3dp"
+		        android:textSize="@dimen/content_textsize_s"
+		        android:textColor="@color/white"
+		        android:text="@string/delete" />
+	    </LinearLayout>
+	</LinearLayout>
+</RelativeLayout>
+</LinearLayout>

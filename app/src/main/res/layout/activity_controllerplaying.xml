@@ -1,0 +1,49 @@
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="@drawable/bg_play"
+    >
+
+    <FrameLayout
+        android:id="@+id/videoviewholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+         >
+		<com.baidu.cyberplayer.core.BVideoView
+        		android:id="@+id/video_view"
+        		android:layout_width="match_parent"
+        		android:layout_height="match_parent"
+        		android:layout_gravity="center"
+        	/>
+
+        <include
+            android:id="@+id/controlbar"
+            layout="@layout/video_control2"
+            android:visibility="invisible"
+             />
+		<include
+            android:id="@+id/load_seekbar_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            layout="@layout/yp_detail_play_loading"
+            android:visibility="gone" />
+
+        <include
+            android:id="@+id/view_restart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            layout="@layout/yp_detail_retry"
+            android:visibility="gone" />
+        <ProgressBar
+            android:id="@+id/media_progress"
+            style="?android:attr/progressBarStyleInverse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+    </FrameLayout>
+</RelativeLayout>

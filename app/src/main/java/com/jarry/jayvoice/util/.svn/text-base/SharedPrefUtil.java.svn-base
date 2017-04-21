@@ -1,0 +1,119 @@
+package com.jarry.jayvoice.util;
+
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+
+/**
+ * 存储用户信息
+ * @author ASRock
+ *
+ */
+public class SharedPrefUtil {
+	Context context;
+	private final String userPref = "userInfo";
+	private final String userPrefId = "userId";
+	private final String userPrefToken = "userPrefToken";
+	private final String ifFirstInstall = "ifInstall";
+	private final String ifLogin = "ifLogin";
+	private final String loginType = "loginType";
+	
+	private final String storePref = "communityInfo";
+	private final String cityName = "cityName";
+	private final String storeId = "storeId";
+	private final String storeName = "storeName";
+	
+	private final String setPref = "cityName";
+	private final String ifReceiveNotice = "ifReceiveNotice";
+	public SharedPrefUtil(Context context){
+		this.context = context;   
+	}
+	public void saveUserInfo(String uid,String userToken){ 
+		SharedPreferences sharedPreferences = context.getSharedPreferences(userPref, Context.MODE_PRIVATE);
+		Editor editor = sharedPreferences.edit();
+		editor.putString(userPrefId, uid);    
+		editor.putString(userPrefToken, userToken);
+		editor.commit();//提交修改 
+	}
+	
+	public void setLogin(boolean flag){
+		SharedPreferences sharedPreferences = context.getSharedPreferences(userPref, Context.MODE_PRIVATE);
+		Editor editor = sharedPreferences.edit();
+		editor.putBoolean(ifLogin, flag);
+		editor.commit();//提交修改 
+	}
+	
+	public void setLoginType(String type){
+		SharedPreferences sharedPreferences = context.getSharedPreferences(userPref, Context.MODE_PRIVATE);
+		Editor editor = sharedPreferences.edit();
+		editor.putString(loginType, type);    
+		editor.commit();//提交修改 
+	}
+	
+	public String getLoginType(){
+		SharedPreferences sharedPreferences = context.getSharedPreferences(userPref, Context.MODE_PRIVATE);     
+        String type = sharedPreferences.getString(loginType, "");
+        return type;
+	}
+	
+	public void clearUserInfo(){
+		SharedPreferences sharedPreferences = context.getSharedPreferences(userPref, Context.MODE_PRIVATE);
+		Editor editor = sharedPreferences.edit();
+		editor.putString(userPrefId, "");
+		editor.putString(userPrefToken, "");
+		editor.putString(loginType, "");
+		editor.commit();//提交修改 
+	}
+	
+	public boolean getLogin(){
+		SharedPreferences sharedPreferences = context.getSharedPreferences(userPref, Context.MODE_PRIVATE);     
+		boolean login = sharedPreferences.getBoolean(ifLogin, false);
+        return login;
+	}
+	
+	public String getUserId(){
+		SharedPreferences sharedPreferences = context.getSharedPreferences(userPref, Context.MODE_PRIVATE);     
+        String userId = sharedPreferences.getString(userPrefId, "");
+        Logger.d("userId:"+userId);
+        return userId;
+	}
+	
+	
+	public String getUserTokenKey(){
+		SharedPreferences sharedPreferences = context.getSharedPreferences(userPref, Context.MODE_PRIVATE);     
+        String userTokenKey = sharedPreferences.getString(userPrefToken, "");
+        Logger.d("userTokenKey:"+userTokenKey);
+        return userTokenKey;
+	}
+	
+	@SuppressLint("CommitPrefEdits") 
+	public void saveInstallInfo(boolean flag){
+		SharedPreferences sharedPreferences = context.getSharedPreferences(userPref, Context.MODE_PRIVATE);
+		Editor editor = sharedPreferences.edit();
+		editor.putBoolean(ifFirstInstall, flag);
+		editor.commit();//提交修改 
+	}
+	
+	public boolean getInstallInfo(){
+		SharedPreferences sharedPreferences = context.getSharedPreferences(userPref, Context.MODE_PRIVATE);     
+        boolean ifInstall = sharedPreferences.getBoolean(ifFirstInstall, false);
+        return ifInstall;
+	}
+	
+	
+	
+	public boolean setIfReceiveNotice(boolean flag){
+		SharedPreferences sharedPreferences = context.getSharedPreferences(setPref, Context.MODE_PRIVATE);
+		Editor editor = sharedPreferences.edit();
+		editor.putBoolean(ifReceiveNotice, flag);
+		return editor.commit();
+	}
+	
+	public boolean getIfReceiveNotice(){
+		SharedPreferences sharedPreferences = context.getSharedPreferences(setPref, Context.MODE_PRIVATE);     
+		boolean ifReceive = sharedPreferences.getBoolean(ifReceiveNotice, true);
+        return ifReceive;
+	}
+}

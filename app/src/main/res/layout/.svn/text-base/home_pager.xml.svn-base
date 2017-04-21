@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.jarry.jayvoice"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <ProgressBar 
+        android:id="@+id/home_pager_progress"
+        android:layout_width="30dp"
+  	    android:layout_height="30dp"
+  	    android:layout_gravity="center"
+        />
+    <cn.join.android.widget.JazzyViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:focusable="true"
+        android:background="@color/lightgray"
+         />
+
+    <com.jarry.jayvoice.widget.CirclePageIndicator
+        android:id="@+id/indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom" 
+        android:padding="5dp"
+        app:pageColor="#AB9999"
+        app:strokeWidth="0dp" />
+
+</FrameLayout>

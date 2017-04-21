@@ -1,0 +1,229 @@
+package com.jarry.jayvoice.activity;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
+
+import org.apache.http.conn.ConnectTimeoutException;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
+
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.listener.OtherLoginListener;
+
+import com.google.gson.JsonObject;
+import com.jarry.jayvoice.R;
+import com.jarry.jayvoice.bean.User;
+import com.jarry.jayvoice.bean.UserQq;
+import com.jarry.jayvoice.core.Config;
+import com.jarry.jayvoice.core.GetDataBusiness.ResUserHandler;
+import com.jarry.jayvoice.core.GetDataBusiness.SaveHandler;
+import com.jarry.jayvoice.util.Logger;
+import com.jarry.jayvoice.util.QQUtil;
+import com.tencent.connect.UserInfo;
+import com.tencent.connect.common.Constants;
+import com.tencent.open.utils.HttpUtils.HttpStatusException;
+import com.tencent.open.utils.HttpUtils.NetworkUnavailableException;
+import com.tencent.tauth.IRequestListener;
+import com.tencent.tauth.IUiListener;
+import com.tencent.tauth.Tencent;
+import com.tencent.tauth.UiError;
+
+public class LoginActivity extends BaseActivity{
+
+	private final int GET_INFO = 0X02;
+	View qqView,weixinView;
+	QQUtil qqUtil;
+	BaseUiListener baseUiListener;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		regToQQ();
+		qqUtil = new QQUtil(this, mTencent);
+		baseUiListener = new BaseUiListener();
+	}
+	
+	@Override
+	public void initView() {
+		// TODO Auto-generated method stub
+		qqView = findViewById(R.id.qq_logon_view);
+		weixinView = findViewById(R.id.weixin_logon_view);
+		weixinView.setOnClickListener(this);
+		qqView.setOnClickListener(this);
+	}
+
+	@Override
+	public void getData() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void showData() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void onClick(View view) {
+		// TODO Auto-generated method stub
+		super.onClick(view);
+		switch (view.getId()) {
+		case R.id.qq_logon_view:
+			qqUtil.doLogin(baseUiListener);
+			break;
+
+		default:
+			break;
+		}
+	}
+	
+	Handler mHandler = new Handler(){
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.what) {
+			case GET_INFO:
+				getQqUserInfo();
+				break;
+			}
+		};
+	};
+
+	@Override
+	public int getLayoutId() {
+		// TODO Auto-generated method stub
+		return R.layout.activity_login;
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		mTencent.onActivityResult(requestCode, resultCode, data);
+	}
+	String access_token;
+	String openid;
+	String expire;
+	public class BaseUiListener implements IUiListener {
+
+		 protected void doComplete(JSONObject jsonObject) {
+			 try {
+				access_token = jsonObject.getString("access_token");
+				openid = jsonObject.getString("openid");
+				expire = jsonObject.getString("expires_in");
+//				System.out.println("wangfj:"+jsonObject);
+				mHandler.sendEmptyMessage(GET_INFO);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		 }
+		 @Override
+		 public void onError(UiError e) {
+			 showToast(e.errorMessage);
+		 }
+		 @Override
+		 public void onCancel() {
+
+		 }
+		 @Override
+		 public void onComplete(Object response) {
+			// TODO Auto-generated method stub
+//			application.setmTencent(mTencent);
+			doComplete((JSONObject) response);
+		 }
+
+	} 
+	
+	
+	public void getQqUserInfo(){
+		getDataBusiness.setStyleText("正在登录,请稍后...");
+		getDataBusiness.showLoading();
+		UserInfo info = new UserInfo(this, mTencent.getQQToken());
+		info.getUserInfo(new IUiListener() {
+			
+			@Override
+			public void onError(UiError e) {
+				// TODO Auto-generated method stub
+				getDataBusiness.hideLoading();
+				showToast(e.errorMessage);
+			}
+			
+			@Override
+			public void onComplete(Object jsonObject) {
+				// TODO Auto-generated method stub
+				UserQq userQq = userManager.getUser((JSONObject) jsonObject);
+				getDataBusiness.hideLoading();
+				saveUser(userQq);				
+			}
+			
+			@Override
+			public void onCancel() {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+//		new BaseUIListener(this,"get_simple_userinfo")
+	 } 
+	
+	private void saveUser(UserQq userQq) {
+		// TODO Auto-generated method stub
+		final User user = new User();
+		user.setUsername(openid);
+		user.accessToken = access_token;
+		user.nickName = userQq.nickname;
+		user.imgUrl = userQq.figureurl_qq_2;
+		if(userQq.gender.equals("男")){
+			user.gender = 0;
+		}else{
+			user.gender = 1;
+		}
+		userManager.saveLoginData(user,Config.LOGINTYPE_QQ);
+		user.setPassword(Config.LOGIN_PWD);
+		getDataBusiness.signUpUser(user, new SaveHandler() {
+			
+			@Override
+			public void onSuccess() {
+				// TODO Auto-generated method stub
+				loginBomb(user);
+			}
+
+			@Override
+			public void onError(int errorCode, String msg) {
+				// TODO Auto-generated method stub
+				if(errorCode==202){//已有该用户，不用添加
+					loginBomb(user);
+				}else{
+					showToast("用户添加失败："+msg);
+				}			
+			}
+		});
+	}
+	
+	private void loginBomb(final User user) {
+		// TODO Auto-generated method stub
+		getDataBusiness.doLogin(user, new SaveHandler() {
+			
+			@Override
+			public void onSuccess() {
+				// TODO Auto-generated method stub
+				showToast("登录成功");
+				goFinish();
+			}
+			
+			@Override
+			public void onError(int errorCode, String msg) {				
+			}
+		});
+	}
+	
+	private void goFinish() {
+		// TODO Auto-generated method stub
+		LoginActivity.this.finish();
+	}
+}

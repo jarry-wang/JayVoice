@@ -1,0 +1,91 @@
+package com.jarry.jayvoice.util;
+
+import java.io.InputStream;
+
+import com.jarry.jayvoice.MyApplication;
+import com.jarry.jayvoice.R;
+import com.jarry.jayvoice.core.Config;
+import com.sina.weibo.sdk.api.ImageObject;
+import com.sina.weibo.sdk.api.TextObject;
+import com.sina.weibo.sdk.api.WebpageObject;
+import com.sina.weibo.sdk.api.WeiboMultiMessage;
+import com.sina.weibo.sdk.api.share.IWeiboShareAPI;
+import com.sina.weibo.sdk.api.share.SendMultiMessageToWeiboRequest;
+import com.sina.weibo.sdk.utils.Utility;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+
+public class SinaWbUtil {
+
+	IWeiboShareAPI  mWeiboShareAPI = null;
+	Context context;
+	String tjTitle,tjContent,pageUrl;
+	public SinaWbUtil(Context context,IWeiboShareAPI  mWeiboShareAPI){
+		this.context = context;
+		this.mWeiboShareAPI = mWeiboShareAPI;
+		tjTitle = Config.invitationTitle;
+		tjContent = Config.invitationInfo;
+		pageUrl = MyApplication.getInstance().getAppUrl();
+	}
+	
+	public void sendMultiMessage() {
+		sendMultiMessage(tjTitle, tjContent, pageUrl);
+	}
+	
+	public void sendMultiMessage(String title,String content,String page) {
+		WeiboMultiMessage weiboMessage = new WeiboMultiMessage();//初始化微博的分享消息
+		weiboMessage. textObject = getTextObj(content);
+		weiboMessage.mediaObject = getWebpageObj(title, content, page);
+		SendMultiMessageToWeiboRequest request = new SendMultiMessageToWeiboRequest();
+		request.transaction = String.valueOf(System.currentTimeMillis());
+		request.multiMessage = weiboMessage;
+		mWeiboShareAPI.sendRequest((Activity) context,request); //发送请求消息到微博，唤起微博分享界面
+	}
+	
+	private TextObject getTextObj(String text) {
+		TextObject textObject = new TextObject();
+		textObject.text = text;
+		return textObject;
+	}
+	
+	/**
+     * 创建图片消息对象。
+     * 
+     * @return 图片消息对象。
+     */
+    private ImageObject getImageObj() {
+    	ImageObject imageObject = new ImageObject();
+    	Resources r = context.getResources();  
+    	InputStream is = r.openRawResource(R.drawable.ic_launcher);  
+    	BitmapDrawable  bmpDraw = new BitmapDrawable(is);  
+    	Bitmap bmp = bmpDraw.getBitmap();
+        imageObject.setImageObject(bmp);
+        return imageObject;
+    }
+
+    /**
+     * 创建多媒体（网页）消息对象。
+     * 
+     * @return 多媒体（网页）消息对象。
+     */
+    private WebpageObject getWebpageObj(String title,String content,String page) {
+        WebpageObject mediaObject = new WebpageObject();
+        mediaObject.identify = Utility.generateGUID();
+        mediaObject.title = title;
+        mediaObject.description = content;    
+        // 设置 Bitmap 类型的图片到视频对象里
+        Resources r = context.getResources();
+        InputStream is = r.openRawResource(R.drawable.ic_launcher);  
+    	BitmapDrawable  bmpDraw = new BitmapDrawable(is);  
+    	Bitmap bmp = bmpDraw.getBitmap();
+        mediaObject.setThumbImage(bmp);
+        mediaObject.actionUrl = page;
+        mediaObject.defaultText = "Webpage 默认文案";
+        return mediaObject;
+    }
+
+}

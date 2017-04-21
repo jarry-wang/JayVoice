@@ -1,0 +1,83 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.0"
+    defaultConfig {
+        applicationId "com.jarry.jayvoice"
+        minSdkVersion 15
+        targetSdkVersion 25
+        versionCode 10
+        versionName "1.7"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+        ndk {
+            //选择要添加的对应cpu类型的.so库。
+            abiFilters 'armeabi', 'armeabi-v7a', 'armeabi-v8a', 'x86', 'x86_64', 'mips', 'mips64'
+        }
+        manifestPlaceholders = [
+                JPUSH_PKGNAME: applicationId,
+                JPUSH_APPKEY : "95581380a9ed1cad0247b7ec", //JPush上注册的包名对应的appkey.
+                JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
+        ]
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+    signingConfigs {
+        debug {
+            try {
+                storeFile file("E:/android-workspace/JayVoice/jayvoice.keystore")
+                storePassword DEBUG_KEYSTORE_PWD
+                keyAlias "androiddebugkey"
+                keyPassword DEBUG_KEY_PWD
+            } catch (ex) {
+                throw new InvalidUserDataException("you should define DEBUG_KEYSTORE_PWD and DEBUG_KEY_PWD")
+            }
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile project(':Uiutillibrary')
+    // 此处以JPush 3.0.0 版本为例。
+    // 此处以JCore 1.0.0 版本为例。
+    compile files('libs/BmobSDK_V3.2.8_0105.jar')
+    compile files('libs/cyberplayer-sdk.jar')
+    compile files('libs/ym_v5.2.4.jar')
+    compile files('libs/open_sdk_r5043_lite.jar')
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.orhanobut:logger:1.11'
+    compile 'com.android.support:support-vector-drawable:25.3.1'
+    compile 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:1.0.2'
+    compile 'com.umeng.analytics:analytics:latest.integration'
+    compile 'cn.jiguang.sdk:jpush:3.0.0'
+    compile 'cn.jiguang.sdk:jcore:1.0.0'
+    compile 'org.apache.httpcomponents:httpcore:4.4.2'
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    testCompile 'junit:junit:4.12'
+}

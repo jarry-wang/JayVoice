@@ -1,0 +1,104 @@
+package com.jarry.jayvoice.activity;
+
+
+import cn.bmob.v3.Bmob;
+import cn.join.android.Logger;
+
+import com.jarry.jayvoice.MainActivity;
+import com.jarry.jayvoice.R;
+import com.jarry.jayvoice.util.StringUtils;
+import com.umeng.update.UmengUpdateAgent;
+
+import a.b.c.CommonManager;
+import a.b.c.DynamicSdkManager;
+import a.b.c.listener.INtpResultListener;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.widget.TextView;
+
+public class EnterActivity extends BaseActivity implements INtpResultListener{
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		Logger.d("EnterActivity--in");
+		//有米广告
+		CommonManager.getInstance(this).init("04ae730e20cffd38", "7b68518189d403e9", false);
+		//bmob初始化
+		Bmob.initialize(this, "9a74543266e5a754c4de1d129c51cf6e");
+		if(!prefUtil.getInstallInfo()){
+			prefUtil.saveInstallInfo(true);
+		}	
+		if(checkLogin()){
+			DynamicSdkManager.getInstance(this).showSplash(this, MainActivity.class);
+//			gotoActivity(MainActivity.class);
+//			this.finish();
+		}
+
+	}
+
+	@Override
+	public void initView() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void getData() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void showData() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private boolean checkLogin() {
+		// TODO Auto-generated method stub
+    	if(userManager.getPrefLogin()){
+        	userManager.getLoginInfo();   		    		
+        }else{
+    		application.setLogin(false);   
+    		application.setUser(null);
+        }
+    	return true;
+	}
+
+	@Override
+	public int getLayoutId() {
+		// TODO Auto-generated method stub
+		return R.layout.activity_enter;
+	}
+
+	@Override
+	public void onCheckNtpFinish(boolean arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	/**
+	 */
+//	@Override
+//	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//		super.onActivityResult(requestCode, resultCode, data);
+//
+//		if (resultCode == 10045) {
+//			Intent intent = new Intent(EnterActivity.this, MainActivity.class);
+//			startActivity(intent);
+//			finish();
+//		}
+//	}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		DynamicSdkManager.getInstance(this).onDestroy(this);
+		DynamicSdkManager.getInstance(this).onAppDestroy();
+		super.onDestroy();
+	}
+}

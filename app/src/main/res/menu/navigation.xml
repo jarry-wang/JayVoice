@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/sl_menu_tab1_bg"
+        android:title="@string/menu_name1" />
+
+    <item
+        android:id="@+id/navigation_st"
+        android:icon="@drawable/sl_menu_tab3_bg"
+        android:title="@string/menu_name3" />
+
+    <item
+        android:id="@+id/navigation_find"
+        android:icon="@drawable/sl_menu_tab2_bg"
+        android:title="@string/menu_name2" />
+
+
+
+</menu>

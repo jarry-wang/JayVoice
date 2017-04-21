@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/anim_view"
+     >
+    
+    <include 
+            android:id="@+id/header_layout"  
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/main_title" /> 
+       
+     <android.support.v4.view.ViewPager
+        android:id="@+id/navigation_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" 
+        android:layout_below="@+id/header_layout"
+        /><!-- com.jarry.jayvoice.widget.MyViewPager -->
+	<View  
+        android:id="@+id/webview_shadow"
+        android:layout_width="match_parent"
+         android:layout_height="match_parent"
+        android:layout_below="@+id/header_layout"       
+        android:background="#b0000000"
+        android:focusable="false"
+        android:visibility="invisible"
+        />
+</RelativeLayout>

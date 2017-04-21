@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="10dp"
+     >
+
+    <TextView
+        android:id="@+id/textView_do_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="@color/greentop"
+        android:text="提示"
+        />
+     
+	<View
+          android:id="@+id/dialog_generic_view_titleline"
+          android:layout_width="fill_parent"
+          android:layout_height="2dip"
+          android:layout_marginTop="8dp"
+          android:layout_marginBottom="8dp"
+          android:layout_below="@+id/textView_do_title"
+          android:background="@color/greentop" />
+
+	<TextView
+        android:id="@+id/textView_do_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textColor="@color/text_color"
+        android:layout_below="@+id/dialog_generic_view_titleline"
+        />
+    <LinearLayout 
+        android:layout_below="@+id/textView_do_info"
+        android:layout_marginTop="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        >
+         <TextView
+        android:id="@+id/input_ifdo_confirm"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/confirm" 
+        android:gravity="center"
+        android:textSize="17sp"
+        android:textColor="@color/text_color"
+        android:background="@drawable/btn_gray_selector"
+        />
+        <View 
+            android:layout_width="25dp"
+        	android:layout_height="match_parent"
+        	/>     
+        <TextView
+        android:id="@+id/input_ifdo_cancel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/cancel" 
+        android:gravity="center"
+        android:textSize="17sp"
+        android:textColor="@color/text_color"
+        android:background="@drawable/btn_gray_selector"
+        />
+    </LinearLayout>
+
+</RelativeLayout>

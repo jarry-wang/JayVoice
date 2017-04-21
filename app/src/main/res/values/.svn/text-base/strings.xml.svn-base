@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">杰伦调调</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_name1">首页</string>
+    <string name="menu_name2">发现</string>
+    <string name="menu_name3">视听</string>
+    <string name="menu_name4">我的</string>
+    <string name="main_tab_play">电台</string>
+    <string name="main_tab_left">歌手</string>
+    <string name="main_tab_right">专辑</string>
+    <string name="music_album">音乐专辑</string>
+    <string name="change_to_people">切换至人物版</string>
+    <string name="change_to_cartoon">切换至卡通版</string>
+    <string name="up">上</string>
+    <string name="left_fh">▷ </string>
+	<string name="find_tab1">专辑</string>
+	<string name="find_tab2">热门</string>
+	<string name="find_tab3">图片</string>
+	<string name="find_tab4">动态</string>
+	<string name="exit_app">再按一次返回到桌面</string>
+	<string name="border_top">Border Top</string>
+    <string name="border_bottom">Border Bottom</string>
+    <string name="image_url">Image Url</string>
+    <string name="login">登录</string>
+    <string name="pleaselogin">请登录</string>
+    <string name="login_colon">登 录</string>
+    <string name="me">我</string>
+    <string name="qq_login">QQ登录</string>
+    <string name="weixin_login">微信登录</string>
+    <string name="loading_info">正在努力加载呢</string>
+    <string name="personal_data">个人资料</string>
+    <string name="head_icon">头像</string>
+    <string name="set_pic_info">设置头像</string>
+    <string name="set_pic_localpic">选择本地照片</string>
+    <string name="set_pic_pz">拍照</string>
+    <string name="ensure">确定</string>
+    <string name="confirm">确定</string>
+    <string name="cancel">取消</string>
+    <string name="commit">提交</string>
+    <string name="setting">设置</string>
+	<string name="receive_notice">接收通知</string>
+	<string name="feedback">意见反馈</string>
+	<string name="detect_updates ">检测更新</string>
+	<string name="about_us">关于我们</string>
+	<string name="dislogin">退出登录</string>
+	<string name="feedback_content">请输入反馈内容</string>
+    <string name="feedback_contact">联系方式(手机或邮箱)</string>
+    <string name="feedback_title">反馈意见</string>
+    <string name="errcode_success">分享成功</string>
+	<string name="errcode_cancel">取消分享</string>
+	<string name="errcode_deny">分享被拒绝</string>
+	<string name="errcode_unknown">分享返回</string>
+	<string name="information">消息</string>
+    <string name="send">发送</string>
+    <string name="invite_friends">邀请好友</string>
+    <string name="invitation_info">快来邀请好友一起使用APP吧！</string>
+    <string name="invitation_tel_info">请填写邀请人手机号码</string>
+    <string name="add_from_txl">+ 从通讯录添加</string>
+    
+    <string name="album_tab1">歌曲</string>   
+    <string name="album_tab2">详情</string>
+    <string name="album">专辑：</string>
+    <string name="language">语言：</string>
+    <string name="publish_time">发行时间：</string>
+    
+    <string name="video_tab1">最热</string>  
+    <string name="video_tab2">最新</string>  
+    <string name="video_from">播放来源：互联网</string>
+    <string name="video_start_play">立即播放</string>
+    <string name="mv">MV</string>
+    <string name="movie">电影</string>
+    <string name="ad">广告</string>
+    <string name="Variety">综艺</string>
+    <string name="Concert">演唱会</string>
+    <string name="jianjie">简介</string>
+    
+    <string name="xl_wb">新浪微博</string>
+    <string name="wx_friends">微信好友</string>
+    <string name="wx_pyq">微信朋友圈</string>
+    <string name="qq_friends">QQ好友</string>
+    <string name="qzone">QQ空间</string>
+    <string name="shareto">分享到</string>
+    <string name="my_collection">我的收藏</string>
+    <string name="delete">删除</string>
+    <string name="welcom_info">您好，我是产品经理小浪，欢迎您反馈使用产品的感受和建议</string>
+    <string name="about">关于</string>
+    
+    <string name="xlistview_header_hint_normal">  下拉刷新</string>
+    <string name="xlistview_header_hint_ready">松开刷新数据</string>
+    <string name="xlistview_header_hint_loading">正在刷新...</string>
+    <string name="xlistview_header_last_time">最后刷新：</string>
+    <string name="xlistview_footer_hint_normal">查看更多</string>
+    <string name="xlistview_footer_hint_ready">松开载入更多</string>
+    <string name="release_to_load">释放立即加载</string>
+    <string name="loading">正在加载...</string>
+    <string name="pullup_to_load">上拉加载更多</string>
+    <string name="pull_to_refresh">下拉刷新</string>
+    <string name="refresh_succeed">刷新成功</string>
+    <string name="refresh_fail">刷新失败</string>
+    <string name="load_succeed">加载成功</string>
+    <string name="load_fail">加载失败</string>
+    
+    
+    
+    <!-- weibo分享成功失败的 Toast -->
+    <string name="weibosdk_demo_toast_share_success">分享成功</string>
+    <string name="weibosdk_demo_toast_share_failed">分享失败</string>
+    <string name="weibosdk_demo_toast_share_canceled">取消分享</string>
+    <string name="weibosdk_demo_toast_share_response_args_success">收到微博发起的请求成功</string>
+    <string name="weibosdk_demo_toast_share_response_args_failed">收到客户端请求消息失败</string>
+    
+    <string name="player_tip_loading">即将为您播放，请稍后...</string>
+</resources>
