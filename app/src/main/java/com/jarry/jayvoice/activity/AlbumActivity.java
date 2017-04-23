@@ -35,6 +35,7 @@ import com.jarry.jayvoice.bean.Singer;
 import com.jarry.jayvoice.bean.Song;
 import com.jarry.jayvoice.core.GetDataBusiness.ResSongListHandler;
 import com.jarry.jayvoice.util.DisplayUtil;
+import com.jarry.jayvoice.util.Logger;
 import com.jarry.jayvoice.util.StringUtils;
 import com.jarry.jayvoice.util.Utility;
 import com.jarry.jayvoice.widget.WhatFallScrollView;
@@ -50,6 +51,7 @@ public class AlbumActivity extends BaseActivity{
 	private ImageView albumIv;
 	private ArrayList<View> mViews;//用来存放下方滚动的layoutlayout_1,layout_2
 	ListView albumListView;
+	ListView albumListView2;
 	TextView albumNameView;
 	TextView albumLanguageView;
 	TextView publishTimeView;
@@ -70,6 +72,7 @@ public class AlbumActivity extends BaseActivity{
 		tabLayout = (TabLayout) findViewById(R.id.tablayout);
 		mViewPager = (ViewPager) findViewById(R.id.viewpager);
 		albumIv = (ImageView) findViewById(R.id.top_img);
+//		albumListView2 = (ListView) findViewById(R.id.album_listview2);
 	}
 	
 	private void iniVariable() {
@@ -88,19 +91,24 @@ public class AlbumActivity extends BaseActivity{
 		album = (Album) getIntent().getSerializableExtra("album");
 		if(album!=null){
 			showAlbumInfo();
-		}		
+		}
+//		getAlbumListData();
 	}
 	
 	private void getAlbumListData() {
 		// TODO Auto-generated method stub
+		System.out.println("getAlbumListData--");
 		getDataBusiness.getSongListFromAlbum(new ResSongListHandler() {
 			
 			@Override
 			public void onResponse(List<Song> result) {
 				// TODO Auto-generated method stub
+				showToast("getAlbumListData---result.size="+result.size());
+				System.out.println("getAlbumListData---result.size="+result.size());
 				SongAdapter songAdapter = new SongAdapter(result);
 				albumListView.setAdapter(songAdapter);
-				Utility.setListViewHeightBasedOnChildren(albumListView,AlbumActivity.this);
+//				albumListView2.setAdapter(songAdapter);
+//				Utility.setListViewHeightBasedOnChildren(albumListView,AlbumActivity.this);
 			}
 		}, album);
 	}

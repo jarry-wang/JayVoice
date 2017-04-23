@@ -7,6 +7,7 @@
     android:layout_height="?attr/actionBarSize"
     android:background="?attr/colorPrimary"
     app:popupTheme="@style/ToolbarPopupTheme"
+    app:theme="@style/toolbarstyle"
     >
     <TextView
         android:id="@+id/toolbar_title_tv"
@@ -14,7 +15,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+        android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+        android:textColor="@color/white"
         android:maxLines="1"
         android:ellipsize="marquee"
         android:marqueeRepeatLimit="marquee_forever"
