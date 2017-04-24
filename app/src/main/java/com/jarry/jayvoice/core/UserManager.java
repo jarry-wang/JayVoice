@@ -66,7 +66,7 @@ public class UserManager {
 		// TODO Auto-generated method stub
     		// TODO Auto-generated method stub	
 		application.setLogin(true);		
-		User user = BmobUser.getCurrentUser(context , User.class);
+		User user = BmobUser.getCurrentUser(User.class);
 		if(user == null){
 			application.setUser(prefUtil.getUserInfo());
 		}else{

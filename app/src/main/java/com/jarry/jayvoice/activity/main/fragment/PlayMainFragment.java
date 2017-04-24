@@ -6,10 +6,7 @@ import java.util.List;
 
 
 
-import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.datatype.BmobFile;
-import cn.bmob.v3.listener.GetListener;
-
 import com.jarry.jayvoice.MyApplication;
 import com.jarry.jayvoice.R;
 import com.jarry.jayvoice.activity.LoginActivity;
@@ -23,9 +20,7 @@ import com.jarry.jayvoice.bean.Qrcode;
 import com.jarry.jayvoice.bean.SType;
 import com.jarry.jayvoice.bean.Singer;
 import com.jarry.jayvoice.bean.Song;
-import com.jarry.jayvoice.core.Config;
 import com.jarry.jayvoice.core.GetDataBusiness;
-import com.jarry.jayvoice.core.GetDataBusiness.DelHandler;
 import com.jarry.jayvoice.core.GetDataBusiness.ResCollectionHandler;
 import com.jarry.jayvoice.core.GetDataBusiness.ResCollectionListHandler;
 import com.jarry.jayvoice.core.GetDataBusiness.ResQrcodeHandler;
@@ -47,16 +42,11 @@ import com.jarry.jayvoice.widget.weel.OnWheelScrollListener;
 import com.jarry.jayvoice.widget.weel.WheelView;
 import com.jarry.jayvoice.widget.weel.dapter.AbstractWheelTextAdapter;
 
-
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.text.Html;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,9 +54,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
-import android.webkit.WebSettings.LayoutAlgorithm;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
@@ -123,15 +110,17 @@ public class PlayMainFragment extends BaseFragment implements MainInterf.PlayMai
 	private WeixinUtil weixinUtil;
 	private MainInterf.MainView mainView;
 
-	public PlayMainFragment(MainInterf.MainView mainView) {
-		this.mainView = mainView;
-		this.mainView.setPlayMainChild(this);
+	public PlayMainFragment() {
+
 	}
+
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container) {
 		// TODO Auto-generated method stub
 		Logger.d("PlayMainFragment--onCreateView");
+		this.mainView = mActivity;
+		this.mainView.setPlayMainChild(this);
 		rootView = inflater.inflate(R.layout.frag_home, container,false);
 		isLive = true;
 		userManager = UserManager.getInstance(getActivity());
@@ -279,6 +268,7 @@ public class PlayMainFragment extends BaseFragment implements MainInterf.PlayMai
 		// TODO Auto-generated method stub
 		if (mainView != null) {
 			mainView.refreshData();
+			doRefresh();
 		}
 	}
 
@@ -506,8 +496,8 @@ public class PlayMainFragment extends BaseFragment implements MainInterf.PlayMai
 	
 	public void SerchLrc(BmobFile lyric) {
 		hasSearchLrc = true;
-		if(lyric.getFileUrl(getActivity())!=null){
-			LyricView.readParse(lyric.getFileUrl(getActivity())); 
+		if(lyric.getFileUrl()!=null){
+			LyricView.readParse(lyric.getFileUrl());
 			mHandler.sendEmptyMessage(UPDATA_LRC);
 		}           
     }  
@@ -580,7 +570,7 @@ public class PlayMainFragment extends BaseFragment implements MainInterf.PlayMai
 						@Override
 						public void onResponse(Collect result) {
 							// TODO Auto-generated method stub
-							mGetDataBusiness.delCollection(result, new DelHandler() {
+							mGetDataBusiness.delCollection(result, new GetDataBusiness.UpdateHandler() {
 								
 								@Override
 								public void onSuccess() {
@@ -636,7 +626,7 @@ public class PlayMainFragment extends BaseFragment implements MainInterf.PlayMai
 			if(currentSong.getSong()!=null){
 				if (!recommondWindow.isShowing()) {
 					showShadow();
-					recommendWxComponent.setMsg(title, content, currentSong.getSong().getFileUrl(mActivity),currentSong.getAlbum().getImage().getFileUrl(mActivity));
+					recommendWxComponent.setMsg(title, content, currentSong.getSong().getFileUrl(),currentSong.getAlbum().getImage().getFileUrl());
 					recommondWindow.showAtLocation(parentView, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
 				}
 			}
@@ -645,7 +635,7 @@ public class PlayMainFragment extends BaseFragment implements MainInterf.PlayMai
 
 	@Override
 	public void doRefresh() {
-		BmobQuery.clearAllCachedResults(mActivity);
+//		BmobQuery.clearAllCachedResults();
 //		rotationImageView();
 //		getTypeData();
 		mGetDataBusiness.setIfShow(false);
@@ -661,9 +651,9 @@ public class PlayMainFragment extends BaseFragment implements MainInterf.PlayMai
 	public void notifySingerInfo(Singer singer) {
 		// TODO Auto-generated method stub
 		if(singer.getUserPic()!=null){
-			if(StringUtils.isNotNull(singer.getUserPic().getFileUrl(getActivity()))){
-//                    ImageUtil.setImg(mActivity,topLeftIv,singer.getUserPic().getFileUrl(getActivity()),R.drawable.userpic);
-//					mActivity.setToolbarLeftImg(singer.getUserPic().getFileUrl(getActivity()));
+			if(StringUtils.isNotNull(singer.getUserPic().getFileUrl())){
+//                    ImageUtil.setImg(mActivity,topLeftIv,singer.getUserPic().getFileUrl(),R.drawable.userpic);
+//					mActivity.setToolbarLeftImg(singer.getUserPic().getFileUrl());
 			}
 		}
 		
@@ -676,7 +666,7 @@ public class PlayMainFragment extends BaseFragment implements MainInterf.PlayMai
 	public void notifyAlbumInfo(Album album) {
 		// TODO Auto-generated method stub
 		if(album.getImage()!=null){
-			mFetcher.loadImage(album.getImage().getFileUrl(getActivity()), picView);
+			mFetcher.loadImage(album.getImage().getFileUrl(), picView);
 		}
 	}
 

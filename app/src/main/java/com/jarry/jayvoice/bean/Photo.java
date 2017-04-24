@@ -29,5 +29,5 @@ public class Photo extends BaseBean {
 	
 	public String url;
 	
-//	public BmobFile pic;
+	public BmobFile pic;
 }

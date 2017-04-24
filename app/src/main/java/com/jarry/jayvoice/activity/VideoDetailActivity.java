@@ -59,7 +59,7 @@ public class VideoDetailActivity extends BaseActivity{
 		// TODO Auto-generated method stub
 		infoView.setVisibility(View.VISIBLE);
 		if(mVedio.image!=null)
-			mFetcher.loadImage(mVedio.image.getFileUrl(this), infoImg);
+			mFetcher.loadImage(mVedio.image.getFileUrl(), infoImg);
 		infoNameTv.setText(mVedio.name);
 		infoLeadTv.setText("主演："+mVedio.lead);
 		if(mVedio.time!=null)

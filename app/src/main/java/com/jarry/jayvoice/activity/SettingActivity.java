@@ -143,7 +143,7 @@ public class SettingActivity extends BaseActivity{
 		if(loginType.equals(Config.LOGINTYPE_WEIXIN)){
 			
 		}else{
-			BmobUser.logOut(this);   //清除缓存用户对象
+			BmobUser.logOut();   //清除缓存用户对象
 			if(mTencent!=null)
 				mTencent.logout(getApplicationContext());
 			userManager.loginOut();

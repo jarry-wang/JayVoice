@@ -30,7 +30,7 @@
     <string name="me">我</string>
     <string name="qq_login">QQ登录</string>
     <string name="weixin_login">微信登录</string>
-    <string name="loading_info">正在努力加载呢</string>
+    <string name="loading_info">努力加载中</string>
     <string name="personal_data">个人资料</string>
     <string name="head_icon">头像</string>
     <string name="set_pic_info">设置头像</string>

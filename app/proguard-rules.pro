@@ -36,6 +36,9 @@
 -keep class com.tencent.open.PKDialog$* {*;}
 
 -keep class com.tencent.mm.sdk.** { *; }
+-dontwarn com.tencent.**
+-keep class com.tencent.** { *; }
+
 -dontwarn cn.jpush.**
 -keep class cn.jpush.** { *; }
 -dontwarn com.sina.**

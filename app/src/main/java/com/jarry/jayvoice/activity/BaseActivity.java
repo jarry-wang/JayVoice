@@ -4,6 +4,7 @@ package com.jarry.jayvoice.activity;
 
 import cn.join.android.net.imgcache.ImageFetcher;
 import cn.join.android.net.imgcache.SharedImageFetcher;
+import cn.join.android.ui.widget.HandyTextView;
 import cn.jpush.android.api.JPushInterface;
 
 import com.jarry.jayvoice.MyApplication;
@@ -11,17 +12,14 @@ import com.jarry.jayvoice.R;
 import com.jarry.jayvoice.core.Config;
 import com.jarry.jayvoice.core.DataBusiness;
 import com.jarry.jayvoice.core.GetDataBusiness;
-import com.jarry.jayvoice.core.UserManager;
 import com.jarry.jayvoice.interfac.IfdoInterface;
 import com.jarry.jayvoice.interfac.activityInterface;
 import com.jarry.jayvoice.util.SharedPrefUtil;
-import com.jarry.jayvoice.widget.HandyTextView;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.tencent.tauth.Tencent;
 import com.umeng.analytics.MobclickAgent;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,12 +29,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.animation.AnimationSet;
-import android.view.animation.TranslateAnimation;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -173,7 +166,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnClickL
 		// TODO Auto-generated method stub
     	// Tencent类是SDK的主要实现类，开发者可通过Tencent类访问腾讯开放的OpenAPI。
     	// 其中APP_ID是分配给第三方应用的appid，类型为String。
-    	mTencent = Tencent.createInstance(Config.qq_APP_ID, this.getApplicationContext());
+    		mTencent = Tencent.createInstance(Config.qq_APP_ID, this.getApplicationContext());
     	 // 1.4版本:此处需新增参数，传入应用程序的全局context，可通过activity的getApplicationContext方法获取
 	}
 	

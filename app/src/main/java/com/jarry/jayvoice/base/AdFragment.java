@@ -183,12 +183,12 @@ public abstract class AdFragment extends BaseFragment{
 			Recommend activity = recommends.get(position % recommends.size());
 			ImageView img = (ImageView) view.findViewById(R.id.img);
 			if(activity.image!=null){
-				if(StringUtils.isNotNull(activity.image.getFileUrl(mActivity))){
-					mFetcher.loadImage(activity.image.getFileUrl(mActivity), img);
+				if(StringUtils.isNotNull(activity.image.getFileUrl())){
+					mFetcher.loadImage(activity.image.getFileUrl(), img);
 				}
 			}else{
 				if(activity.video!=null){
-					mFetcher.loadImage(activity.video.image.getFileUrl(mActivity), img);
+					mFetcher.loadImage(activity.video.image.getFileUrl(), img);
 				}
 			}
 			

@@ -265,7 +265,7 @@ public class PlayerEngineImpl implements PlayerEngine {
 //		String path = MyApplication.getInstance().getDownloadInterface().getTrackPath(playlistEntry);
 		String path = null;
 		if(path == null){
-			path = playlistEntry.getSong().getSong().getFileUrl(MyApplication.getInstance());		
+			path = playlistEntry.getSong().getSong().getFileUrl();
 		}
 			// fallback to remote one	
 		// some albums happen to contain empty stream url, notify of error, abort playback

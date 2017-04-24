@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-public class HandyTextView extends android.support.v7.widget.AppCompatTextView {
+public class HandyTextView extends TextView {
 
 	public HandyTextView(Context context) {
 		super(context);

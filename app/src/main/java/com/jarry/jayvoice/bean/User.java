@@ -10,5 +10,10 @@ public class User extends BmobUser {
 	
 	public String imgUrl;
 	
-	public int gender;//0:男  1：女 
+	public int gender;//0:男  1：女
+
+	@Override
+	public String toString() {
+		return "user{nickName:"+nickName+"}";
+	}
 }

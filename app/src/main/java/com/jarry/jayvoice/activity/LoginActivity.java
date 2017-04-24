@@ -1,10 +1,5 @@
 package com.jarry.jayvoice.activity;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
-
-import org.apache.http.conn.ConnectTimeoutException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,27 +7,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-
-import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.listener.OtherLoginListener;
-
-import com.google.gson.JsonObject;
 import com.jarry.jayvoice.R;
 import com.jarry.jayvoice.bean.User;
 import com.jarry.jayvoice.bean.UserQq;
 import com.jarry.jayvoice.core.Config;
-import com.jarry.jayvoice.core.GetDataBusiness.ResUserHandler;
 import com.jarry.jayvoice.core.GetDataBusiness.SaveHandler;
 import com.jarry.jayvoice.core.UserManager;
 import com.jarry.jayvoice.util.Logger;
 import com.jarry.jayvoice.util.QQUtil;
+import com.jarry.jayvoice.util.StringUtils;
 import com.tencent.connect.UserInfo;
 import com.tencent.connect.common.Constants;
-import com.tencent.open.utils.HttpUtils.HttpStatusException;
-import com.tencent.open.utils.HttpUtils.NetworkUnavailableException;
-import com.tencent.tauth.IRequestListener;
 import com.tencent.tauth.IUiListener;
-import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
 
 public class LoginActivity extends BaseActivity{
@@ -107,19 +93,26 @@ public class LoginActivity extends BaseActivity{
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
-		mTencent.onActivityResult(requestCode, resultCode, data);
+		Logger.d("loginactivity--onActivityResult--requestCode="+requestCode+";resultCode="+resultCode);
+		Logger.d("loginactivity--onActivityResult--Constants.REQUEST_API="+Constants.REQUEST_API+";Constants.REQUEST_LOGIN="+Constants.REQUEST_LOGIN);
+		if(requestCode == Constants.REQUEST_LOGIN) {
+			mTencent.handleLoginData(data, baseUiListener);
+		}
+		super.onActivityResult(requestCode, resultCode, data);
 	}
+
 	String access_token;
 	String openid;
 	String expire;
-	public class BaseUiListener implements IUiListener {
+	class BaseUiListener implements IUiListener {
 
 		 protected void doComplete(JSONObject jsonObject) {
 			 try {
 				access_token = jsonObject.getString("access_token");
 				openid = jsonObject.getString("openid");
 				expire = jsonObject.getString("expires_in");
-//				System.out.println("wangfj:"+jsonObject);
+				mTencent.setOpenId(openid);
+				mTencent.setAccessToken(access_token,expire);
 				mHandler.sendEmptyMessage(GET_INFO);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
@@ -132,12 +125,13 @@ public class LoginActivity extends BaseActivity{
 		 }
 		 @Override
 		 public void onCancel() {
-
+			 System.out.println("BaseUiListener--onCancel");
 		 }
 		 @Override
 		 public void onComplete(Object response) {
 			// TODO Auto-generated method stub
 //			application.setmTencent(mTencent);
+			 System.out.println("BaseUiListener--onComplete:"+response);
 			doComplete((JSONObject) response);
 		 }
 
@@ -147,12 +141,14 @@ public class LoginActivity extends BaseActivity{
 	public void getQqUserInfo(){
 		getDataBusiness.setStyleText("正在登录,请稍后...");
 		getDataBusiness.showLoading();
+		Logger.d("getQqUserInfo--- mTencent.getQQToken()="+ mTencent.getQQToken()+";mTencent.getOpenId()="+mTencent.getOpenId());
 		UserInfo info = new UserInfo(this, mTencent.getQQToken());
 		info.getUserInfo(new IUiListener() {
 			
 			@Override
 			public void onError(UiError e) {
 				// TODO Auto-generated method stub
+				System.out.println("getQqUserInfo-onError:"+e.errorMessage);
 				getDataBusiness.hideLoading();
 				showToast(e.errorMessage);
 			}
@@ -160,6 +156,7 @@ public class LoginActivity extends BaseActivity{
 			@Override
 			public void onComplete(Object jsonObject) {
 				// TODO Auto-generated method stub
+				System.out.println("getQqUserInfo-onComplete:"+jsonObject);
 				UserQq userQq = userManager.getUser((JSONObject) jsonObject);
 				getDataBusiness.hideLoading();
 				saveUser(userQq);				
@@ -181,7 +178,7 @@ public class LoginActivity extends BaseActivity{
 		user.accessToken = access_token;
 		user.nickName = userQq.nickname;
 		user.imgUrl = userQq.figureurl_qq_2;
-		if(userQq.gender.equals("男")){
+		if(StringUtils.isNotNull(userQq.gender) && userQq.gender.equals("男")){
 			user.gender = 0;
 		}else{
 			user.gender = 1;
@@ -228,5 +225,11 @@ public class LoginActivity extends BaseActivity{
 	private void goFinish() {
 		// TODO Auto-generated method stub
 		LoginActivity.this.finish();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		mTencent = null;
 	}
 }

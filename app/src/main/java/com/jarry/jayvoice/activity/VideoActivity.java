@@ -233,8 +233,8 @@ public class VideoActivity extends PullGridViewBaseActivity implements TabLayout
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
             		LayoutParams.FILL_PARENT, (int) ((pWidth / 2)*1.2));
             viewHold.imageView.setLayoutParams(params);
-            if(itemInfo.image!=null&&StringUtils.isNotNull(itemInfo.image.getFileUrl(context))){            	
-            	mFetcher.loadImage(itemInfo.image.getFileUrl(context), viewHold.imageView);
+            if(itemInfo.image!=null&&StringUtils.isNotNull(itemInfo.image.getFileUrl())){
+            	mFetcher.loadImage(itemInfo.image.getFileUrl(), viewHold.imageView);
             }
             viewHold.nameView.setText(itemInfo.name);
             if(itemInfo.time!=null)

@@ -8,7 +8,7 @@ import com.jarry.jayvoice.R;
 import com.jarry.jayvoice.bean.Collect;
 import com.jarry.jayvoice.bean.Song;
 import com.jarry.jayvoice.bean.User;
-import com.jarry.jayvoice.core.GetDataBusiness.DelHandler;
+import com.jarry.jayvoice.core.GetDataBusiness;
 import com.jarry.jayvoice.core.GetDataBusiness.ResCollectionHandler;
 import com.jarry.jayvoice.core.UserManager;
 import com.jarry.jayvoice.interfac.IfdoInterface;
@@ -161,7 +161,7 @@ public class CollectionActivity extends BaseActivity{
 									@Override
 									public void onResponse(Collect result) {
 										// TODO Auto-generated method stub
-										getDataBusiness.delCollection(result, new DelHandler() {
+										getDataBusiness.delCollection(result, new GetDataBusiness.UpdateHandler() {
 											
 											@Override
 											public void onSuccess() {

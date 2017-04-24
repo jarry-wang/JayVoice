@@ -42,6 +42,7 @@ import com.jarry.jayvoice.activity.main.fragment.PlayMainFragment;
 import com.jarry.jayvoice.activity.main.fragment.SeeFragment;
 import com.jarry.jayvoice.core.UserManager;
 import com.jarry.jayvoice.util.ImageUtil;
+import com.jarry.jayvoice.util.Logger;
 import com.jarry.jayvoice.util.StringUtils;
 import com.umeng.analytics.MobclickAgent;
 
@@ -141,7 +142,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void refreshData() {
-        mRefreshLayout.autoRefresh();
+        mRefreshLayout.setRefreshing(true);
     }
 
     @Override
@@ -332,6 +333,7 @@ public class MainActivity extends AppCompatActivity
 
     private void getData() {
         // TODO Auto-generated method stub
+        Logger.d("MainActivity--getdata--user="+user.toString());
         if (userManager.isLogin()) {
             user = userManager.getUser();
             if (user==null || StringUtils.isNull(user.getUsername())) {

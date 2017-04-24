@@ -10,13 +10,14 @@ import com.jarry.jayvoice.bean.Photo;
 import com.jarry.jayvoice.bean.SType;
 import com.jarry.jayvoice.bean.Singer;
 import com.jarry.jayvoice.bean.Song;
-import com.jarry.jayvoice.util.ToastUtil;
 
+import cn.bmob.v3.BmobBatch;
 import cn.bmob.v3.BmobObject;
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.GetListener;
+import cn.bmob.v3.datatype.BatchResult;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.QueryListListener;
 import cn.bmob.v3.listener.SaveListener;
+import cn.join.android.util.ToastUtil;
 
 import android.content.Context;
 
@@ -27,6 +28,7 @@ public class DataBusiness {
 						,"七里香","叶惠美","八度空间","范特西","Jay"
 						};
 	String[] years = {"2014","2012","2011","2010","2008","2007","2006","2005","2004","2003","2002","2001","2000"};
+	ToastUtil toastUtil;
 	/**
 	 * 构造函数
 	 * 
@@ -34,6 +36,7 @@ public class DataBusiness {
 	 */
 	public DataBusiness(Context getcontext) {
 		this.context = getcontext;
+		toastUtil = new ToastUtil(context);
 	}
 	
 	public interface ResponseHandlerFind {
@@ -58,17 +61,15 @@ public class DataBusiness {
 		    album.setRating(0.9);
 		    albums.add(album);
 		}
-		new BmobObject().insertBatch(context, albums, new SaveListener() {
-		    @Override
-		    public void onSuccess() {
-		        // TODO Auto-generated method stub
-		        ToastUtil.showToast(context, "批量添加成功");
-		    }
-		    @Override
-		    public void onFailure(int code, String msg) {
-		        // TODO Auto-generated method stub
-		    	ToastUtil.showToast(context,"批量添加失败:"+msg);
-		    }
+		new BmobBatch().insertBatch(albums).doBatch(new QueryListListener<BatchResult>() {
+			@Override
+			public void done(List<BatchResult> list, BmobException e) {
+				if (e == null) {
+					toastUtil.showToast("批量添加成功");
+				}else {
+					toastUtil.showToast("批量添加失败:"+e.getMessage());
+				}
+			}
 		});
 	}
 
@@ -80,17 +81,16 @@ public class DataBusiness {
     	album.setName("啊哦哟不错哦");
     	album.setRating(0.9);
     	album.setArtistName("周杰伦");
-    	album.save(context, new SaveListener() {
+    	album.save(new SaveListener() {
 
-    	    @Override
-    	    public void onSuccess() {
-    	    	ToastUtil.showToast(context,"添加成功");
-    	    }
-
-    	    @Override
-    	    public void onFailure(int code, String arg0) {
-    	    	ToastUtil.showToast(context,"添加失败:"+arg0);
-    	    }
+			@Override
+			public void done(Object o, BmobException e) {
+				if (e == null) {
+					toastUtil.showToast("添加成功");
+				}else {
+					toastUtil.showToast("添加失败:"+e.getMessage());
+				}
+			}
     	});
 	}
 	
@@ -126,18 +126,16 @@ public class DataBusiness {
     	    sType.setTypeName(strings[i]);
     	    sTypes.add(sType);
     	}
-    	new BmobObject().insertBatch(context, sTypes, new SaveListener() {
-    	    @Override
-    	    public void onSuccess() {
-    	        // TODO Auto-generated method stub
-    	    	ToastUtil.showToast(context,"批量操作成功");
-    	    }
-    	    @Override
-    	    public void onFailure(int code, String msg) {
-    	        // TODO Auto-generated method stub
-    	    	ToastUtil.showToast(context,"添加失败:"+msg);
-    	    }
-    	});
+		new BmobBatch().insertBatch(sTypes).doBatch(new QueryListListener<BatchResult>() {
+			@Override
+			public void done(List<BatchResult> list, BmobException e) {
+				if (e == null) {
+					toastUtil.showToast("批量操作成功");
+				}else {
+					toastUtil.showToast("批量添加失败:"+e.getMessage());
+				}
+			}
+		});
 	}
 	
 	/**
@@ -193,17 +191,15 @@ public class DataBusiness {
     		photo.url = strings[i];
     		sPics.add(photo);
     	}
-    	new BmobObject().insertBatch(context, sPics, new SaveListener() {
-    	    @Override
-    	    public void onSuccess() {
-    	        // TODO Auto-generated method stub
-    	    	ToastUtil.showToast(context,"批量操作成功");
-    	    }
-    	    @Override
-    	    public void onFailure(int code, String msg) {
-    	        // TODO Auto-generated method stub
-    	    	ToastUtil.showToast(context,"添加失败:"+msg);
-    	    }
-    	});
+		new BmobBatch().insertBatch(sPics).doBatch(new QueryListListener<BatchResult>() {
+			@Override
+			public void done(List<BatchResult> list, BmobException e) {
+				if (e == null) {
+					toastUtil.showToast("批量操作成功");
+				}else {
+					toastUtil.showToast("批量添加失败:"+e.getMessage());
+				}
+			}
+		});
 	}
 }

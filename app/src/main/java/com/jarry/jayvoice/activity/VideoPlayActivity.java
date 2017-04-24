@@ -203,7 +203,7 @@ public class VideoPlayActivity extends BaseActivity implements OnPreparedListene
         videoTypeId = getIntent().getIntExtra("typeId", 1);
         mediaControl.setTitleName(mVedio.name);
         if(mVedio.file!=null){
-            mVideoSource = mVedio.file.getFileUrl(this);
+            mVideoSource = mVedio.file.getFileUrl();
         }else{
             mVideoSource = mVedio.fileurl;
         }

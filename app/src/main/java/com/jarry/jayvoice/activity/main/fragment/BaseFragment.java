@@ -5,6 +5,7 @@ import java.lang.ref.SoftReference;
 
 import cn.join.android.net.imgcache.ImageFetcher;
 import cn.join.android.net.imgcache.SharedImageFetcher;
+import cn.join.android.ui.widget.HandyTextView;
 import cn.join.android.util.ToastUtil;
 
 import com.jarry.jayvoice.activity.main.MainActivity;
@@ -15,9 +16,7 @@ import com.jarry.jayvoice.core.Config;
 import com.jarry.jayvoice.core.DataBusiness;
 import com.jarry.jayvoice.core.GetDataBusiness;
 import com.jarry.jayvoice.core.NavInterface;
-import com.jarry.jayvoice.core.UserManager;
 import com.jarry.jayvoice.util.SharedPrefUtil;
-import com.jarry.jayvoice.widget.HandyTextView;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.tencent.tauth.Tencent;

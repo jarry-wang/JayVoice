@@ -6,7 +6,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.jarry.jayvoice.R;
-import com.jarry.jayvoice.widget.HandyTextView;
+
+import cn.join.android.ui.widget.HandyTextView;
 
 public class ToastUtil {
 

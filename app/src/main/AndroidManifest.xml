@@ -52,13 +52,10 @@
         <activity
             android:name=".activity.main.MainActivity"
             android:label="@string/title_activity_main"
-            />
-        <activity
-            android:name=".MainMainActivity"
             android:hardwareAccelerated="true"
-            android:label="@string/title_activity_main"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            />
 
         <service android:name=".service.PlayerService" />
 
@@ -93,7 +90,7 @@
             android:name=".activity.VideoPlayActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity
             android:name=".activity.InvitationActivity"
             android:screenOrientation="portrait">

@@ -16,7 +16,7 @@ import com.jarry.jayvoice.util.ImageUtil;
 import com.jarry.jayvoice.util.ListUtil;
 import com.jarry.jayvoice.util.Logger;
 import com.jarry.jayvoice.util.StringUtils;
-import com.jarry.jayvoice.widget.WhatFallScrollView;
+import com.jarry.jayvoice.widget.SpacesItemDecoration;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 
@@ -28,24 +28,19 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.animation.AnimationSet;
-import android.view.animation.TranslateAnimation;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
-import android.widget.CompoundButton;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
 @SuppressLint({ "CutPasteId", "SetJavaScriptEnabled" })
@@ -56,27 +51,31 @@ public class FindFragment extends BaseFragment implements MainInterf.FindChild{
 	private View changeAlTypeView;
 	private TextView changeAlTypeTv;
 	int alType = 0;//0:人物版；1：卡通版
-	List<Album> albumList = new ArrayList<Album>();
+	List<Album> albumList = new ArrayList<>();
+	List<Photo> picList = new ArrayList<>();
 	AlbumAdapter albumAdapter;
 
 	private ViewPager mViewPager;	//下方的可横向拖动的控件
 	private ArrayList<View> mViews;//用来存放下方滚动的layout(layout_1,layout_2,layout_3)
 	WebView newsWebView;
 	String newsHomeUrl;
-	WhatFallScrollView whatFallScrollView;
+	RecyclerView picRecyclerView;
+	PicAdapter picAdapter;
+	private int picWidth;
+	private List<Integer> picHeights = new ArrayList<>();
 	private MainInterf.MainView mainView;
 	private boolean canRefresh = true;
 	private TabLayout mTabLayout;
 
-	public FindFragment(MainInterf.MainView mainView) {
-		this.mainView = mainView;
-		this.mainView.setFindChild(this);
-	}
+	public FindFragment(){}
+
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container) {
 		// TODO Auto-generated method stub
 		Logger.d("AlbumFragment--onCreateView");
+		this.mainView = mActivity;
+		this.mainView.setFindChild(this);
 		lin = LayoutInflater.from(getActivity());
 		rootView = inflater.inflate(R.layout.frag_find, container,false);					
         return rootView;
@@ -91,6 +90,7 @@ public class FindFragment extends BaseFragment implements MainInterf.FindChild{
 //		mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
 		iniVariable();
 		mTabLayout.setupWithViewPager(mViewPager);
+		mGetDataBusiness.setIfShow(false);
 	}
 
 
@@ -123,8 +123,17 @@ public class FindFragment extends BaseFragment implements MainInterf.FindChild{
 			@Override
 			public void onResponse(List<Photo> result) {
 				// TODO Auto-generated method stub
-				whatFallScrollView.setPhotos(result);
-				whatFallScrollView.postInvalidate();
+				picList.clear();
+				picHeights.clear();
+				if (ListUtil.isNotNull(result)){
+					picList.addAll(result);
+				}
+				Logger.d("getPicData--picList.size="+picList.size());
+				for (int i = 0;i<picList.size();i++){
+					picHeights.add((int) (Math.random()*200+300));
+				}
+				picAdapter.notifyDataSetChanged();
+				mainView.stopRefresh();
 			}
 		});
 	}
@@ -146,7 +155,7 @@ public class FindFragment extends BaseFragment implements MainInterf.FindChild{
 			newsHomeUrl = application.getSinger().getNewsUrl();
 			newsWebView.loadUrl(newsHomeUrl);
 		}
-		
+		mainView.stopRefresh();
 	}
 	@Override
 	public void onResume() {
@@ -188,8 +197,17 @@ public class FindFragment extends BaseFragment implements MainInterf.FindChild{
 
 	@Override
 	public void doRefresh() {
-		mGetDataBusiness.setIfShow(false);
-		getAlbumData();
+		switch (mViewPager.getCurrentItem()) {
+			case 0:
+				getAlbumData();
+				break;
+			case 1:
+				getPicData();
+				break;
+			case 2:
+				showNewsData();
+				break;
+		}
 	}
 
 	class AlbumAdapter extends BaseAdapter{
@@ -215,28 +233,32 @@ public class FindFragment extends BaseFragment implements MainInterf.FindChild{
 		@Override
 		public View getView(int position, View view, ViewGroup arg2) {
 			// TODO Auto-generated method stub
+			ViewHolder viewHolder = null;
 			if(view == null){
+				viewHolder = new ViewHolder();
 				view = lin.inflate(R.layout.album_item_layout,null);
+				viewHolder.albumImg = (ImageView) view.findViewById(R.id.album_item_img);
+				viewHolder.albumName = (TextView) view.findViewById(R.id.album_item_name);
+				viewHolder.albumNum = (TextView) view.findViewById(R.id.album_item_num);
+				view.setTag(viewHolder);
+			}else {
+				viewHolder = (ViewHolder) view.getTag();
 			}
 			final Album album = (Album) getItem(position);
-			final ImageView albumImg = (ImageView) view.findViewById(R.id.album_item_img);
-			TextView albumName = (TextView) view.findViewById(R.id.album_item_name);
-			TextView albumNum = (TextView) view.findViewById(R.id.album_item_num);
-			albumName.setText(album.getName());
-			albumNum.setText(album.getNum()+"首");
+
+			viewHolder.albumName.setText(album.getName());
+			viewHolder.albumNum.setText(album.getNum()+"首");
 			if(album.getImage()!=null&&album.getCartoonImg()!=null){
-				final String imgUrl = alType==0?album.getImage().getFileUrl(getActivity()):album.getCartoonImg().getFileUrl(getActivity());
+				final String imgUrl = alType==0?album.getImage().getFileUrl():album.getCartoonImg().getFileUrl();
 				if(StringUtils.isNotNull(imgUrl))
-					ImageUtil.setImg(mActivity,albumImg,imgUrl,0);
-//					mFetcher.loadImage(imgUrl, albumImg);
-				doAnim(albumImg);
+					ImageUtil.setImg(mActivity,viewHolder.albumImg,imgUrl,0);
+				doAnim(viewHolder.albumImg);
 			}	
 			view.setOnClickListener(new OnClickListener() {
 				
 				@Override
 				public void onClick(View arg0) {
 					// TODO Auto-generated method stub
-//					ImageUtil.gotoImage(mActivity, imgUrl, albumImg);
 					Intent intent = new Intent(mActivity,AlbumActivity.class);
 					intent.putExtra("album", album);
 					startActivity(intent);
@@ -254,6 +276,12 @@ public class FindFragment extends BaseFragment implements MainInterf.FindChild{
 			set.setTarget(albumImg);
 			set.playTogether(translationY,translationX);
 			set.start();
+		}
+
+		class ViewHolder {
+			ImageView albumImg;
+			TextView albumName;
+			TextView albumNum;
 		}
 	}
 
@@ -321,6 +349,7 @@ public class FindFragment extends BaseFragment implements MainInterf.FindChild{
 					});
 					changeAlTypeView.setOnClickListener(FindFragment.this);
 					mainView.refreshData();
+					getAlbumData();
 					break;
 				case 1:
 					View banner = DynamicSdkManager.getInstance(mActivity).getBanner(mActivity);
@@ -328,7 +357,14 @@ public class FindFragment extends BaseFragment implements MainInterf.FindChild{
 					adLayout.removeAllViews();
 					if(banner!=null)
 						adLayout.addView(banner);
-					whatFallScrollView = (WhatFallScrollView) rootView.findViewById(R.id.my_scroll_view);
+					picRecyclerView = (RecyclerView) rootView.findViewById(R.id.pic_recyclerView);
+					StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+					picRecyclerView.setLayoutManager(staggeredGridLayoutManager);
+					SpacesItemDecoration decoration=new SpacesItemDecoration(12,staggeredGridLayoutManager);
+					picRecyclerView.addItemDecoration(decoration);
+					picWidth = (DisplayUtil.getWindowWidth(mActivity) - 12*3) / 2;
+					picAdapter = new PicAdapter();
+					picRecyclerView.setAdapter(picAdapter);
 					getPicData();
 					break;
 				case 2:
@@ -375,6 +411,42 @@ public class FindFragment extends BaseFragment implements MainInterf.FindChild{
 			return null;
 		}
 		
+	}
+
+	class PicAdapter extends RecyclerView.Adapter<PicAdapter.ViewHolder> {
+
+
+		@Override
+		public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+			View view = LayoutInflater.from(mActivity).inflate(R.layout.find_pic_item_layout,null);
+			return new ViewHolder(view);
+		}
+
+		@Override
+		public void onBindViewHolder(ViewHolder holder, int position) {
+			if (position < picList.size() && position < picHeights.size()){
+				String imageUrl = picList.get(position).url;
+				ViewGroup.LayoutParams lp = holder.imageView.getLayoutParams();
+				lp.width = picWidth;
+				lp.height = picHeights.get(position);
+				holder.imageView.setLayoutParams(lp);
+
+				ImageUtil.setImg(mActivity,holder.imageView,imageUrl,0, new int[]{lp.width, lp.height});
+			}
+		}
+
+		@Override
+		public int getItemCount() {
+			return picList.size();
+		}
+
+		class ViewHolder extends RecyclerView.ViewHolder {
+			ImageView imageView;
+			public ViewHolder(View itemView) {
+				super(itemView);
+				imageView = (ImageView) itemView.findViewById(R.id.find_pic_item_img);
+			}
+		}
 	}
 
 

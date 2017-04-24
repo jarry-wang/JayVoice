@@ -22,10 +22,11 @@ import com.jarry.jayvoice.util.ListUtil;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobQuery.CachePolicy;
-import cn.bmob.v3.listener.DeleteListener;
+import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.GetListener;
+import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.listener.UpdateListener;
 import cn.join.android.util.ToastUtil;
 
 import android.app.Activity;
@@ -69,15 +70,16 @@ public class GetDataBusiness {
 	 */
 	public GetDataBusiness(Context context) {
 		this.context = context;
-		initDialog(context);
 		toastUtil = new ToastUtil(context);
+		initDialog();
 	}
 
-	private void initDialog(Context context){
-		loadingDialog = new Dialog(context, R.style.LoadDialogText);
-		loadingDialog.setContentView(R.layout.loading_dialog);
-		loadingDialog.setOnKeyListener(onDialogKeyListener);
-		loadingDialog.setCancelable(true);
+	private void initDialog(){
+		setStyleTextNormal();
+	}
+
+	public void setStyleTextNormal(){
+		setStyleText(context.getString(R.string.loading_info));
 	}
 	
 	public void setStyleText(String text) {
@@ -90,14 +92,7 @@ public class GetDataBusiness {
 		TextView textView = (TextView) loadingDialog.findViewById(R.id.loading_text);
 		textView.setText(text);
 	}
-	
-	public void setStyleNoText() {
-		if(loadingDialog!=null)loadingDialog = null;
-		loadingDialog = new Dialog(context, R.style.LoadDialogText);
-		loadingDialog.setContentView(R.layout.loading_dialog);
-		loadingDialog.setOnKeyListener(onDialogKeyListener);
-		loadingDialog.setCancelable(true);
-	}
+
 	
 	public void showLoading() {
 		// TODO Auto-generated method stub
@@ -173,7 +168,7 @@ public class GetDataBusiness {
 		void onError(int errorCode,String msg);
 	}
 	
-	public interface DelHandler {
+	public interface UpdateHandler {
 		void onSuccess();
 		void onError(int errorCode,String msg);
 	}
@@ -189,26 +184,24 @@ public class GetDataBusiness {
 		showLoading();		
 		BmobQuery<SType> query = new BmobQuery<SType>();
 		query.order("num");
-		boolean isCache = query.hasCachedResult(context);
+		boolean isCache = query.hasCachedResult(SType.class);
 		if(isCache){
 			query.setCachePolicy(CachePolicy.CACHE_ELSE_NETWORK);
 		}else{
 			query.setCachePolicy(CachePolicy.NETWORK_ELSE_CACHE);
 		}
-		query.findObjects(context, new FindListener<SType>() {
+		query.findObjects(new FindListener<SType>() {
 
 			@Override
-			public void onError(int code, String msg) {
-				// TODO Auto-generated method stub	
-				doError(code,msg);
+			public void done(List<SType> list, BmobException e) {
+				if (e == null) {
+					handler.onResponse(list);
+					hideLoading();
+				}else {
+					doError(e.getErrorCode(),e.getMessage());
+				}
 			}
 
-			@Override
-			public void onSuccess(List<SType> result) {
-				// TODO Auto-generated method stub
-				handler.onResponse(result);	
-				hideLoading();
-			}
 		});
 	}
 	
@@ -220,19 +213,17 @@ public class GetDataBusiness {
 		BmobQuery<Song> songQuery = new BmobQuery<Song>();
 		songQuery.include("singer.name,album");
 		songQuery.setCachePolicy(CachePolicy.NETWORK_ELSE_CACHE);
-		songQuery.findObjects(context, new FindListener<Song>() {				
+		songQuery.findObjects(new FindListener<Song>() {
 			@Override
-			public void onSuccess(List<Song> result) {
-				// TODO Auto-generated method stub
-//				showToast("共"+result.size()+"首歌曲");
-				handler.onResponse(result);
-				hideLoading();
-			}				
-			@Override
-			public void onError(int arg0, String msg) {
-				// TODO Auto-generated method stub		
-				doError(arg0,msg);
+			public void done(List<Song> list, BmobException e) {
+				if (e == null) {
+					handler.onResponse(list);
+					hideLoading();
+				}else {
+					doError(e.getErrorCode(),e.getMessage());
+				}
 			}
+
 		});	
 	}
 
@@ -240,21 +231,19 @@ public class GetDataBusiness {
 	 * 获取歌手信息
 	 */
 	public void getSingerInfo(final CommonBeanRedHandler handler) {
-		BmobQuery<Singer> query2 = new BmobQuery<Singer>();
-		query2.getObject(context, Config.jay_id, new GetListener<Singer>() {
+		BmobQuery<Singer> query2 = new BmobQuery<>();
+		query2.getObject(Config.jay_id, new QueryListener<Singer>() {
 
 			@Override
-			public void onSuccess(Singer object) {
-				// TODO Auto-generated method stub
-				MyApplication.getInstance().setSinger(object);
-				handler.onResponse(object);
+			public void done(Singer singer, BmobException e) {
+				if (e == null) {
+					MyApplication.getInstance().setSinger(singer);
+					handler.onResponse(singer);
+				}else {
+					doError(e.getErrorCode(),e.getMessage());
+				}
 			}
 
-			@Override
-			public void onFailure(int code, String arg0) {
-				// TODO Auto-generated method stub
-				doError(code,arg0);
-			}
 		});
 	}
 
@@ -269,25 +258,24 @@ public class GetDataBusiness {
 		if(ifReload){
 			songQuery.setCachePolicy(CachePolicy.NETWORK_ELSE_CACHE);
 		}else{
-			boolean isCache = songQuery.hasCachedResult(context);
+			boolean isCache = songQuery.hasCachedResult(Song.class);
 			if(isCache){
 				songQuery.setCachePolicy(CachePolicy.CACHE_ELSE_NETWORK);    // 如果有缓存的话，则设置策略为CACHE_ELSE_NETWORK
 			}else{
 				songQuery.setCachePolicy(CachePolicy.NETWORK_ELSE_CACHE);    // 如果没有缓存的话，则设置策略为NETWORK_ELSE_CACHE
 			}
 		}
-		songQuery.findObjects(context, new FindListener<Song>() {				
+		songQuery.findObjects(new FindListener<Song>() {
 			@Override
-			public void onSuccess(List<Song> result) {
-				// TODO Auto-generated method stub
-				handler.onResponse(result);	
-				hideLoading();
-			}				
-			@Override
-			public void onError(int arg0, String msg) {
-				// TODO Auto-generated method stub	
-				doError(arg0,msg);
+			public void done(List<Song> list, BmobException e) {
+				if (e == null) {
+					handler.onResponse(list);
+					hideLoading();
+				}else {
+					doError(e.getErrorCode(),e.getMessage());
+				}
 			}
+
 		});	
 	}
 	
@@ -296,21 +284,19 @@ public class GetDataBusiness {
 	 */
 	public void getSongListFromAlbum(final ResSongListHandler handler,Album album){
 		showLoading();
-		BmobQuery<Song> songQuery = new BmobQuery<Song>();			
+		BmobQuery<Song> songQuery = new BmobQuery<>();
 		songQuery.include("singer.name,album,sType");
 		songQuery.addWhereEqualTo("album", album);
 		songQuery.setCachePolicy(CachePolicy.NETWORK_ELSE_CACHE);
-		songQuery.findObjects(context, new FindListener<Song>() {				
+		songQuery.findObjects(new FindListener<Song>() {
 			@Override
-			public void onSuccess(List<Song> result) {
-				// TODO Auto-generated method stub
-				handler.onResponse(result);	
-				hideLoading();
-			}				
-			@Override
-			public void onError(int arg0, String msg) {
-				// TODO Auto-generated method stub	
-				doError(arg0,msg);
+			public void done(List<Song> list, BmobException e) {
+				if (e == null) {
+					handler.onResponse(list);
+					hideLoading();
+				}else {
+					doError(e.getErrorCode(),e.getMessage());
+				}
 			}
 		});	
 	}
@@ -320,22 +306,20 @@ public class GetDataBusiness {
 	 */
 	public void getAlbumList(final ResAlbumListHandler handler){
 		showLoading();
-		BmobQuery<Album> albumQuery = new BmobQuery<Album>();
+		BmobQuery<Album> albumQuery = new BmobQuery<>();
 		albumQuery.order("-sort");
 		albumQuery.addWhereEqualTo("singer", MyApplication.getInstance().getSinger());
 		albumQuery.include("singer");
 		albumQuery.setCachePolicy(CachePolicy.NETWORK_ELSE_CACHE);
-		albumQuery.findObjects(context, new FindListener<Album>() {				
+		albumQuery.findObjects(new FindListener<Album>() {
 			@Override
-			public void onSuccess(List<Album> result) {
-				// TODO Auto-generated method stub
-				handler.onResponse(result);	
-				hideLoading();
-			}				
-			@Override
-			public void onError(int arg0, String msg) {
-				// TODO Auto-generated method stub
-				doError(arg0,msg);
+			public void done(List<Album> list, BmobException e) {
+				if (e == null) {
+					handler.onResponse(list);
+					hideLoading();
+				}else {
+					doError(e.getErrorCode(),e.getMessage());
+				}
 			}
 		});	
 	}
@@ -345,25 +329,23 @@ public class GetDataBusiness {
 	 */
 	public void getPhotoList(final ResPhotoListHandler handler){
 		showLoading();
-		BmobQuery<Photo> photoQuery = new BmobQuery<Photo>();
+		BmobQuery<Photo> photoQuery = new BmobQuery<>();
 		photoQuery.order("-createdAt");
-		boolean isCache = photoQuery.hasCachedResult(context);
+		boolean isCache = photoQuery.hasCachedResult(Photo.class);
 		if(isCache){
 			photoQuery.setCachePolicy(CachePolicy.CACHE_ELSE_NETWORK);    // 如果有缓存的话，则设置策略为CACHE_ELSE_NETWORK
 		}else{
 			photoQuery.setCachePolicy(CachePolicy.NETWORK_ELSE_CACHE);    // 如果没有缓存的话，则设置策略为NETWORK_ELSE_CACHE
 		}
-		photoQuery.findObjects(context, new FindListener<Photo>() {				
+		photoQuery.findObjects( new FindListener<Photo>() {
 			@Override
-			public void onSuccess(List<Photo> result) {
-				// TODO Auto-generated method stub
-				handler.onResponse(result);	
-				hideLoading();
-			}				
-			@Override
-			public void onError(int arg0, String msg) {
-				// TODO Auto-generated method stub
-				doError(arg0,msg);
+			public void done(List<Photo> list, BmobException e) {
+				if (e == null) {
+					handler.onResponse(list);
+					hideLoading();
+				}else {
+					doError(e.getErrorCode(),e.getMessage());
+				}
 			}
 		});	
 	}
@@ -374,13 +356,13 @@ public class GetDataBusiness {
 	 */
 	public void getVideoList(int typeId,int orderType,final ResVideoListHandler handler){
 		showLoading();
-		BmobQuery<Vedio> videoQuery = new BmobQuery<Vedio>();
-		boolean isCache = videoQuery.hasCachedResult(context);
-//		if(isCache){
-//			videoQuery.setCachePolicy(CachePolicy.CACHE_ELSE_NETWORK);    // 如果有缓存的话，则设置策略为CACHE_ELSE_NETWORK
-//		}else{
-//			videoQuery.setCachePolicy(CachePolicy.NETWORK_ELSE_CACHE);    // 如果没有缓存的话，则设置策略为NETWORK_ELSE_CACHE
-//		}
+		BmobQuery<Vedio> videoQuery = new BmobQuery<>();
+		boolean isCache = videoQuery.hasCachedResult(Vedio.class);
+		if(isCache){
+			videoQuery.setCachePolicy(CachePolicy.CACHE_ELSE_NETWORK);    // 如果有缓存的话，则设置策略为CACHE_ELSE_NETWORK
+		}else{
+			videoQuery.setCachePolicy(CachePolicy.NETWORK_ELSE_CACHE);    // 如果没有缓存的话，则设置策略为NETWORK_ELSE_CACHE
+		}
 		if(orderType==1){
 			videoQuery.order("-time");
 		}else{
@@ -388,17 +370,14 @@ public class GetDataBusiness {
 		}
 		videoQuery.addWhereEqualTo("typeId", typeId);
 		videoQuery.setCachePolicy(CachePolicy.NETWORK_ELSE_CACHE);
-		videoQuery.findObjects(context, new FindListener<Vedio>() {				
+		videoQuery.findObjects(new FindListener<Vedio>() {
 			@Override
-			public void onSuccess(List<Vedio> result) {
-				// TODO Auto-generated method stub
-				handler.onResponse(result);	
-				hideLoading();
-			}				
-			@Override
-			public void onError(int arg0, String msg) {
-				// TODO Auto-generated method stub
-				handler.onError(arg0, msg);
+			public void done(List<Vedio> list, BmobException e) {
+				if (e == null) {
+					handler.onResponse(list);
+				}else {
+					handler.onError(e.getErrorCode(),e.getMessage());
+				}
 				hideLoading();
 			}
 		});	
@@ -408,20 +387,17 @@ public class GetDataBusiness {
 		// TODO Auto-generated method stub
 		showLoading();
 		BmobQuery<Vedio> query = new BmobQuery<Vedio>();
-		query.getObject(context, id, new GetListener<Vedio>() {
+		query.getObject(id, new QueryListener<Vedio>() {
 
-		    @Override
-		    public void onSuccess(Vedio vedio) {
-		        // TODO Auto-generated method stub
-		    	resVedioHandler.onResponse(vedio);
-		    	hideLoading();
-		    }
-
-		    @Override
-		    public void onFailure(int arg0, String msg) {
-		        // TODO Auto-generated method stub
-		    	doError(arg0,msg);
-		    }
+			@Override
+			public void done(Vedio vedio, BmobException e) {
+				if (e == null) {
+					resVedioHandler.onResponse(vedio);
+					hideLoading();
+				}else {
+					doError(e.getErrorCode(),e.getMessage());
+				}
+			}
 
 		});
 	}
@@ -436,17 +412,15 @@ public class GetDataBusiness {
 		activityQuery.include("video");
 		activityQuery.order("num");
 		activityQuery.setCachePolicy(CachePolicy.NETWORK_ELSE_CACHE);	
-		activityQuery.findObjects(context, new FindListener<Recommend>() {				
+		activityQuery.findObjects(new FindListener<Recommend>() {
 			@Override
-			public void onSuccess(List<Recommend> result) {
-				// TODO Auto-generated method stub
-				handler.onResponse(result);	
-				hideLoading();
-			}				
-			@Override
-			public void onError(int arg0, String msg) {
-				// TODO Auto-generated method stub
-				doError(arg0,msg);
+			public void done(List<Recommend> list, BmobException e) {
+				if (e == null) {
+					handler.onResponse(list);
+					hideLoading();
+				}else {
+					doError(e.getErrorCode(),e.getMessage());
+				}
 			}
 		});	
 	}
@@ -458,27 +432,24 @@ public class GetDataBusiness {
 		showLoading();
 		BmobQuery<Qrcode> qrcQuery = new BmobQuery<Qrcode>();
 		qrcQuery.setCachePolicy(CachePolicy.NETWORK_ELSE_CACHE);
-		qrcQuery.findObjects(context, new FindListener<Qrcode>() {				
+		qrcQuery.findObjects(new FindListener<Qrcode>() {
 			@Override
-			public void onSuccess(List<Qrcode> result) {
-				// TODO Auto-generated method stub
-				if(ListUtil.isNotNull(result)){
-					handler.onResponse(result.get(0));	
-				}			
-				hideLoading();
-			}				
-			@Override
-			public void onError(int arg0, String msg) {
-				// TODO Auto-generated method stub
-				if(arg0 == 9009){
-					Qrcode qrcode = new Qrcode();
-					qrcode.url = Config.APP_URL_XIAOMI;
-					handler.onResponse(qrcode);
+			public void done(List<Qrcode> list, BmobException e) {
+				if (e == null) {
+					if(ListUtil.isNotNull(list)){
+						handler.onResponse(list.get(0));
+					}
 					hideLoading();
-				}else{
-					doError(arg0,msg);
+				}else {
+					if(e.getErrorCode() == 9009){
+						Qrcode qrcode = new Qrcode();
+						qrcode.url = Config.APP_URL_XIAOMI;
+						handler.onResponse(qrcode);
+						hideLoading();
+					}else{
+						doError(e.getErrorCode(),e.getMessage());
+					}
 				}
-				
 			}
 		});	
 	}
@@ -490,20 +461,17 @@ public class GetDataBusiness {
 		showLoading();
 		BmobQuery<About> aboutQuery = new BmobQuery<About>();
 		aboutQuery.setCachePolicy(CachePolicy.NETWORK_ELSE_CACHE);
-		aboutQuery.findObjects(context, new FindListener<About>() {				
+		aboutQuery.findObjects(new FindListener<About>() {
 			@Override
-			public void onSuccess(List<About> result) {
-				// TODO Auto-generated method stub
-				if(ListUtil.isNotNull(result)){
-					handler.onResponse(result.get(0));	
-				}			
-				hideLoading();
-			}				
-			@Override
-			public void onError(int arg0, String msg) {
-				// TODO Auto-generated method stub
-				doError(arg0,msg);
-				
+			public void done(List<About> list, BmobException e) {
+				if (e == null) {
+					if(ListUtil.isNotNull(list)){
+						handler.onResponse(list.get(0));
+					}
+					hideLoading();
+				}else {
+					doError(e.getErrorCode(),e.getMessage());
+				}
 			}
 		});	
 	}
@@ -525,7 +493,7 @@ public class GetDataBusiness {
 	 * 添加用户
 	 */
 	public void addUser(User user,SaveHandler saveHandler){		
-		user.save(context, new MySaveListener(saveHandler));
+		user.save(new MySaveListener(saveHandler));
 	}
 	
 	/**
@@ -534,19 +502,17 @@ public class GetDataBusiness {
 	public void signUpUser(User user,final SaveHandler saveHandler) {
 		// TODO Auto-generated method stub
 		showLoading();
-		user.signUp(context, new SaveListener() {
-		    @Override
-		    public void onSuccess() {
-		        // TODO Auto-generated method stub
-		    	saveHandler.onSuccess();
-		    	hideLoading();
-		    }
-		    @Override
-		    public void onFailure(int code, String msg) {
-		        // TODO Auto-generated method stub
-		    	saveHandler.onError(code,msg);
-		    	hideLoading();
-		    }
+		user.signUp(new SaveListener<User>() {
+
+			@Override
+			public void done(User o, BmobException e) {
+				if (e == null) {
+					saveHandler.onSuccess();
+				}else {
+					saveHandler.onError(e.getErrorCode(), e.getMessage());
+				}
+				hideLoading();
+			}
 		});
 	}
 	
@@ -558,19 +524,15 @@ public class GetDataBusiness {
 	public void doLogin(User user,final SaveHandler saveHandler) {
 		// TODO Auto-generated method stub
 		showLoading();
-		user.login(context, new SaveListener() {
-			
+		user.login(new SaveListener<User>() {
 			@Override
-			public void onSuccess() {
-				// TODO Auto-generated method stub
-				saveHandler.onSuccess();
-				hideLoading();
-			}
-			
-			@Override
-			public void onFailure(int arg0, String msg) {
-				// TODO Auto-generated method stub
-				doError(arg0,"登录失败:"+msg);
+			public void done(User o, BmobException e) {
+				if (e == null) {
+					saveHandler.onSuccess();
+					hideLoading();
+				}else {
+					doError(e.getErrorCode(),"登录失败:"+e.getMessage());
+				}
 			}
 		});
 	}
@@ -586,22 +548,19 @@ public class GetDataBusiness {
 		BmobQuery<User> query = new BmobQuery<User>();	
 		query.addWhereEqualTo("username", username);
 		query.setCachePolicy(CachePolicy.NETWORK_ELSE_CACHE);
-		query.findObjects(context, new FindListener<User>() {
-			
+		query.findObjects(new FindListener<User>() {
+
 			@Override
-			public void onSuccess(List<User> users) {
-				// TODO Auto-generated method stub
-				if(users.size()>0){
-					handler.onResponse(users.get(0));
+			public void done(List<User> list, BmobException e) {
+				if (e == null) {
+					if(list.size()>0){
+						handler.onResponse(list.get(0));
+					}
+					hideLoading();
+				}else {
+					handler.onError();
+					hideLoading();
 				}
-				hideLoading();
-			}
-			
-			@Override
-			public void onError(int arg0, String msg) {
-				// TODO Auto-generated method stub
-				handler.onError();
-				hideLoading();
 			}
 		});
 	}
@@ -616,20 +575,17 @@ public class GetDataBusiness {
 		query.addWhereEqualTo("userId", user.getObjectId());
 		query.include("song,song.singer,song.album,song.sType");
 		query.setCachePolicy(CachePolicy.NETWORK_ELSE_CACHE);
-		query.findObjects(context,  new FindListener<Collect>() {
+		query.findObjects(new FindListener<Collect>() {
 
-		    @Override
-		    public void onSuccess(List<Collect> result) {
-		        // TODO Auto-generated method stub
-		    	hideLoading();
-		    	handler.onResponse(result);
-		    }
-
-		    @Override
-		    public void onError(int code, String arg0) {
-		        // TODO Auto-generated method stub
-		        doError(code, arg0);
-		    }
+			@Override
+			public void done(List<Collect> list, BmobException e) {
+				if (e == null) {
+					handler.onResponse(list);;
+					hideLoading();
+				}else {
+					doError(e.getErrorCode(), e.getMessage());
+				}
+			}
 
 		});
 	}
@@ -644,20 +600,18 @@ public class GetDataBusiness {
 		query.addWhereEqualTo("userId", user.getObjectId());
 		query.addWhereEqualTo("song", song);
 		query.setCachePolicy(CachePolicy.NETWORK_ELSE_CACHE);
-		query.findObjects(context,  new FindListener<Collect>() {
+		query.findObjects(new FindListener<Collect>() {
 
-		    @Override
-		    public void onSuccess(List<Collect> result) {
-		        // TODO Auto-generated method stub
-		    	hideLoading();
-		    	handler.onResponse(result.get(0));
-		    }
-
-		    @Override
-		    public void onError(int code, String arg0) {
-		        // TODO Auto-generated method stub
-		        doError(code, arg0);
-		    }
+			@Override
+			public void done(List<Collect> list, BmobException e) {
+				if (e == null) {
+					if (list.size() > 0)
+						handler.onResponse(list.get(0));
+					hideLoading();
+				}else {
+					doError(e.getErrorCode(), e.getMessage());
+				}
+			}
 
 		});
 	}
@@ -670,7 +624,7 @@ public class GetDataBusiness {
 		Collect collection = new Collect();
 		collection.userId = user.getObjectId();
 		collection.song = song;
-		collection.save(context, new MySaveListener(saveHandler));
+		collection.save(new MySaveListener(saveHandler));
 	}
 	
 	/**
@@ -678,9 +632,9 @@ public class GetDataBusiness {
 	 * @author mlfdev1
 	 *
 	 */
-	public void delCollection(Collect collection,DelHandler delHandler){
+	public void delCollection(Collect collection,UpdateHandler delHandler){
 		showLoading();
-		collection.delete(context, new MyDeleteListener(delHandler));
+		collection.delete(new MyUpdateListener(delHandler));
 	}
 	
 	/**
@@ -694,7 +648,8 @@ public class GetDataBusiness {
 		FeedBack feedBack = new FeedBack();
 		feedBack.contact_info = info;
 		feedBack.feedback_content = content;
-		feedBack.save(context, new MySaveListener(saveHandler));
+
+		feedBack.save(new MySaveListener(saveHandler));
 	}
 	
 	class MySaveListener extends SaveListener{
@@ -702,39 +657,34 @@ public class GetDataBusiness {
 		public MySaveListener(SaveHandler saveHandler){
 			this.saveHandler = saveHandler;
 		}
-		@Override
-		public void onFailure(int arg0, String msg) {
-			// TODO Auto-generated method stub
-			doError(arg0, msg);
-		}
 
 		@Override
-		public void onSuccess() {
-			// TODO Auto-generated method stub
-			saveHandler.onSuccess();
+		public void done(Object o, BmobException e) {
+			if (e == null) {
+				saveHandler.onSuccess();
+			}else {
+				saveHandler.onError(e.getErrorCode(), e.getMessage());
+			}
 			hideLoading();
 		}
-		
+
 	}
 	
-	class MyDeleteListener extends DeleteListener{
-		DelHandler delHandler;
-		public MyDeleteListener(DelHandler delHandler){
-			this.delHandler = delHandler;
-		}
-		@Override
-		public void onFailure(int arg0, String msg) {
-			// TODO Auto-generated method stub
-			doError(arg0, msg);
+	class MyUpdateListener extends UpdateListener{
+		UpdateHandler updateHandler;
+		public MyUpdateListener(UpdateHandler delHandler){
+			this.updateHandler = delHandler;
 		}
 
 		@Override
-		public void onSuccess() {
-			// TODO Auto-generated method stub
-			delHandler.onSuccess();
+		public void done(BmobException e) {
+			if (e == null) {
+				updateHandler.onSuccess();
+			}else {
+				updateHandler.onError(e.getErrorCode(), e.getMessage());
+			}
 			hideLoading();
 		}
-		
 	}
 	
 	private void doError(int code,String msg) {

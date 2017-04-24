@@ -11,6 +11,7 @@ import com.jarry.jayvoice.activity.main.interf.MainInterf;
 import com.jarry.jayvoice.base.AdFragment;
 import com.jarry.jayvoice.bean.Recommend;
 import com.jarry.jayvoice.core.GetDataBusiness.ResRecommendListHandler;
+import com.jarry.jayvoice.core.UserManager;
 import com.jarry.jayvoice.util.ListUtil;
 import com.jarry.jayvoice.widget.CirclePageIndicator;
 
@@ -29,13 +30,18 @@ public class SeeFragment extends AdFragment implements MainInterf.SeeChild{
 	List<Recommend> activities;
 	private MainInterf.MainView mainView;
 
-	public SeeFragment(MainInterf.MainView mainView) {
-		this.mainView = mainView;
-		this.mainView.setSeeChild(this);
+	public SeeFragment(){
+		Logger.d("SeeFragment--SeeFragment()");
 	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container) {
 		// TODO Auto-generated method stub
+		Logger.d("SeeFragment--onCreateView");
+		if (mainView == null) {
+			mainView = mActivity;
+			mainView.setSeeChild(this);
+		}
 		root = inflater.inflate(R.layout.frag_see, container, false);				
 		return root;
 	}
@@ -54,8 +60,27 @@ public class SeeFragment extends AdFragment implements MainInterf.SeeChild{
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
+		Logger.d("SeeFragment--onPause");
 		super.onPause();
 		clearAdHandler();
+	}
+
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		Logger.d("SeeFragment--onDetach");
+	}
+
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+		Logger.d("SeeFragment--onDestroyView");
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		Logger.d("SeeFragment--onDestroy");
 	}
 
 	@Override
@@ -100,6 +125,7 @@ public class SeeFragment extends AdFragment implements MainInterf.SeeChild{
 	public void getData() {
 		// TODO Auto-generated method stub
 		mainView.refreshData();
+		doRefresh();
 	}
 
 	@Override

@@ -13,46 +13,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.AbsListView;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.RadioGroup.OnCheckedChangeListener;
-
 import com.jarry.jayvoice.activity.main.MainActivity;
 import com.jarry.jayvoice.R;
-import com.jarry.jayvoice.activity.main.fragment.FindFragment;
 import com.jarry.jayvoice.bean.Album;
-import com.jarry.jayvoice.bean.Singer;
 import com.jarry.jayvoice.bean.Song;
 import com.jarry.jayvoice.core.GetDataBusiness.ResSongListHandler;
-import com.jarry.jayvoice.util.DisplayUtil;
-import com.jarry.jayvoice.util.Logger;
+import com.jarry.jayvoice.util.ImageUtil;
 import com.jarry.jayvoice.util.StringUtils;
-import com.jarry.jayvoice.util.Utility;
-import com.jarry.jayvoice.widget.WhatFallScrollView;
-
-import a.b.c.DynamicSdkManager;
 
 public class AlbumActivity extends BaseActivity{
 
 
-	
-//	private ImageView albumIv,headIv,albumTabIv;
+
 	private ViewPager mViewPager;
 	private ImageView albumIv;
 	private ArrayList<View> mViews;//用来存放下方滚动的layoutlayout_1,layout_2
 	ListView albumListView;
-	ListView albumListView2;
 	TextView albumNameView;
+	ImageView albumImageView;
 	TextView albumLanguageView;
 	TextView publishTimeView;
 	TextView albumDescView;
@@ -68,11 +50,11 @@ public class AlbumActivity extends BaseActivity{
 	@Override
 	public void initView() {
 		// TODO Auto-generated method stub
-		setTitle("专辑");
+		getSupportActionBar().setDisplayShowTitleEnabled(true);
+		getSupportActionBar().setTitle("专辑");
 		tabLayout = (TabLayout) findViewById(R.id.tablayout);
 		mViewPager = (ViewPager) findViewById(R.id.viewpager);
 		albumIv = (ImageView) findViewById(R.id.top_img);
-//		albumListView2 = (ListView) findViewById(R.id.album_listview2);
 	}
 	
 	private void iniVariable() {
@@ -92,7 +74,6 @@ public class AlbumActivity extends BaseActivity{
 		if(album!=null){
 			showAlbumInfo();
 		}
-//		getAlbumListData();
 	}
 	
 	private void getAlbumListData() {
@@ -103,12 +84,8 @@ public class AlbumActivity extends BaseActivity{
 			@Override
 			public void onResponse(List<Song> result) {
 				// TODO Auto-generated method stub
-				showToast("getAlbumListData---result.size="+result.size());
-				System.out.println("getAlbumListData---result.size="+result.size());
 				SongAdapter songAdapter = new SongAdapter(result);
 				albumListView.setAdapter(songAdapter);
-//				albumListView2.setAdapter(songAdapter);
-//				Utility.setListViewHeightBasedOnChildren(albumListView,AlbumActivity.this);
 			}
 		}, album);
 	}
@@ -122,6 +99,7 @@ public class AlbumActivity extends BaseActivity{
 		albumNameView.setText(album.getName());
 		albumLanguageView.setText(album.getLanguage());
 		publishTimeView.setText(album.getPublishTime());
+		ImageUtil.setImg(this,albumImageView,album.getImage().getFileUrl(),R.drawable.xk_bg,new int[]{100, 100});
 		if(StringUtils.isNotNull(album.getDesc()))
 			albumDescView.setText(Html.fromHtml(album.getDesc()));	
 	}
@@ -136,20 +114,13 @@ public class AlbumActivity extends BaseActivity{
 		// TODO Auto-generated method stub
 		if(album==null)return;
 		if(StringUtils.isNotNull(album.getName()))
-			setTitle(album.getName());
+			getSupportActionBar().setTitle(album.getName());
 		if(album.getBig_image()!=null){
-			String imgUrl = album.getBig_image().getFileUrl(this);
+			String imgUrl = album.getBig_image().getFileUrl();
 			if(StringUtils.isNotNull(imgUrl)){
-				mFetcher.loadImage(imgUrl, albumIv);
+				ImageUtil.setImg(this,albumIv,imgUrl,R.drawable.xk_bg, new int[]{500, 500});
 			}
-		}	
-//		Singer singer = album.getSinger();
-//		if(singer!=null){
-//			if(singer.getUserPic()!=null)
-//				mFetcher.loadImage(singer.getUserPic().getFileUrl(this), headIv);
-//			singerNameTv.setText(singer.getName());
-//		}
-//		topPublishTv.setText(album.getPublishTime());
+		}
 	}
 
 	@Override
@@ -204,6 +175,7 @@ public class AlbumActivity extends BaseActivity{
 					getAlbumListData();
 					break;
 				case 1:
+					albumImageView = (ImageView) findViewById(R.id.album_imageview);
 					albumNameView = (TextView) findViewById(R.id.album_name_textview);
 					albumLanguageView = (TextView) findViewById(R.id.album_language_textview);
 					publishTimeView = (TextView) findViewById(R.id.album_publishtime_textview);
@@ -243,20 +215,26 @@ public class AlbumActivity extends BaseActivity{
 		@Override
 		public View getView(int position, View convertView, ViewGroup arg2) {
 			// TODO Auto-generated method stub
+			ViewHolder viewHolder = null;
 			if(convertView == null){
+				viewHolder = new ViewHolder();
 				convertView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.song_list_item, null);
+				viewHolder.numView = (TextView) convertView.findViewById(R.id.song_listitem_num);
+				viewHolder.nameView = (TextView) convertView.findViewById(R.id.song_listitem_name);
+				viewHolder.infoView = (TextView) convertView.findViewById(R.id.song_listitem_info);
+				viewHolder.rightView = (ImageView) convertView.findViewById(R.id.song_listitem_right);
+				viewHolder.controlView = convertView.findViewById(R.id.song_listitem_controlview);
+				viewHolder.delView = convertView.findViewById(R.id.song_listitem_delview);
+				convertView.setTag(viewHolder);
+			}else {
+				viewHolder = (ViewHolder) convertView.getTag();
 			}
-			TextView numView = (TextView) convertView.findViewById(R.id.song_listitem_num);
-			TextView nameView = (TextView) convertView.findViewById(R.id.song_listitem_name);
-			TextView infoView = (TextView) convertView.findViewById(R.id.song_listitem_info);
-			final ImageView rightView = (ImageView) convertView.findViewById(R.id.song_listitem_right);
-			final View controlView = convertView.findViewById(R.id.song_listitem_controlview);
-			View delView = convertView.findViewById(R.id.song_listitem_delview);
-			rightView.setVisibility(View.GONE);
+
+			viewHolder.rightView.setVisibility(View.GONE);
 			final Song song = (Song) getItem(position);
-			numView.setText(StringUtils.getNum(position+1));
-			nameView.setText(song.getName());
-			infoView.setText(song.getSinger().getName()+"·"+song.getAlbum().getName());
+			viewHolder.numView.setText(StringUtils.getNum(position+1));
+			viewHolder.nameView.setText(song.getName());
+			viewHolder.infoView.setText(song.getSinger().getName()+"·"+song.getAlbum().getName());
 			convertView.setBackgroundResource(R.drawable.list_selector_bg);
 			convertView.setOnClickListener(new OnClickListener() {
 				
@@ -267,6 +245,15 @@ public class AlbumActivity extends BaseActivity{
 				}
 			});
 			return convertView;
+		}
+
+		class ViewHolder {
+			TextView numView;
+			TextView nameView;
+			TextView infoView;
+			ImageView rightView;
+			View controlView;
+			View delView;
 		}
 		
 	}

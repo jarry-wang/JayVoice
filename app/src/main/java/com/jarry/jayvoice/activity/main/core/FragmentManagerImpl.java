@@ -78,15 +78,15 @@ public class FragmentManagerImpl implements MainInterf.FragmentManageInterface{
         switch (tag) {
             case R.id.navigation_home:
                 if(f==null)
-                    f = new PlayMainFragment(this.mainView);
+                    f = new PlayMainFragment();
                 break;
             case R.id.navigation_find:
                 if(f==null)
-                    f = new FindFragment(this.mainView);
+                    f = new FindFragment();
                 break;
             case R.id.navigation_st:
                 if(f==null)
-                    f = new SeeFragment(this.mainView);
+                    f = new SeeFragment();
                 break;
         }
 
