@@ -17,13 +17,16 @@ import com.jarry.jayvoice.util.ListUtil;
 import com.jarry.jayvoice.util.Logger;
 import com.jarry.jayvoice.util.StringUtils;
 import com.jarry.jayvoice.widget.SpacesItemDecoration;
+import com.jarry.jayvoice.widget.WebView4Scroll;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 
 import a.b.c.DynamicSdkManager;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Parcelable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
@@ -65,6 +68,7 @@ public class FindFragment extends BaseFragment implements MainInterf.FindChild{
 	private List<Integer> picHeights = new ArrayList<>();
 	private MainInterf.MainView mainView;
 	private boolean canRefresh = true;
+	private boolean webviewCanRefresh = true;
 	private TabLayout mTabLayout;
 
 	public FindFragment(){}
@@ -144,7 +148,14 @@ public class FindFragment extends BaseFragment implements MainInterf.FindChild{
     	mViews = new ArrayList<>();
     	mViews.add(getActivity().getLayoutInflater().inflate(R.layout.find_album_layout, null));
     	mViews.add(getActivity().getLayoutInflater().inflate(R.layout.find_pic_layout, null));
-    	mViews.add(getActivity().getLayoutInflater().inflate(R.layout.find_news_layout, null));
+		WebView4Scroll webView4Scroll = new WebView4Scroll(mActivity, new WebView4Scroll.ScroellListener() {
+			@Override
+			public void canRefrsh(boolean canRefresh) {
+				if (mainView != null)
+					mainView.setEnableRefresh(canRefresh);
+			}
+		});
+    	mViews.add(webView4Scroll);
     	mViewPager.setAdapter(new MyPagerAdapter());//设置ViewPager的适配器
     	mViewPager.setCurrentItem(0);
 	}
@@ -251,7 +262,7 @@ public class FindFragment extends BaseFragment implements MainInterf.FindChild{
 			if(album.getImage()!=null&&album.getCartoonImg()!=null){
 				final String imgUrl = alType==0?album.getImage().getFileUrl():album.getCartoonImg().getFileUrl();
 				if(StringUtils.isNotNull(imgUrl))
-					ImageUtil.setImg(mActivity,viewHolder.albumImg,imgUrl,0);
+					ImageUtil.setImg(mActivity,viewHolder.albumImg,imgUrl,0, new int[]{200, 200});
 				doAnim(viewHolder.albumImg);
 			}	
 			view.setOnClickListener(new OnClickListener() {
@@ -368,12 +379,12 @@ public class FindFragment extends BaseFragment implements MainInterf.FindChild{
 					getPicData();
 					break;
 				case 2:
-					View banner2 = DynamicSdkManager.getInstance(mActivity).getBanner(mActivity);
-					LinearLayout adLayout2=(LinearLayout)rootView.findViewById(R.id.adLayout2);
-					adLayout2.removeAllViews();
-					if(banner2!=null)
-						adLayout2.addView(banner2);
-					newsWebView = (WebView) rootView.findViewById(R.id.view_webview);
+//					View banner2 = DynamicSdkManager.getInstance(mActivity).getBanner(mActivity);
+//					LinearLayout adLayout2=(LinearLayout)rootView.findViewById(R.id.adLayout2);
+//					adLayout2.removeAllViews();
+//					if(banner2!=null)
+//						adLayout2.addView(banner2);
+					newsWebView = (WebView) rootView;
 					newsWebView.getSettings().setJavaScriptEnabled(true);
 					newsWebView.setWebViewClient(new WebViewClient(){
 						@Override

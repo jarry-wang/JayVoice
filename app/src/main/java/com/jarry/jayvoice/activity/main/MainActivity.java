@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Logger.d("MainActivity--onCreate");
         setContentView(R.layout.activity_main);
         application = (MyApplication) this.getApplicationContext();
         userManager = UserManager.getInstance(this);
@@ -110,6 +111,7 @@ public class MainActivity extends AppCompatActivity
     protected void onNewIntent(Intent intent) {
         // TODO Auto-generated method stub
         super.onNewIntent(intent);
+        Logger.d("MainActivity--onNewIntent");
         setIntent(intent);
     }
 
@@ -117,9 +119,11 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
+        Logger.d("MainActivity--onResume-ifLogin="+ifLogin+";userManager.isLogin()="+userManager.isLogin());
         MobclickAgent.onResume(this);
         if (ifLogin != userManager.isLogin()) {
             getData();
+            ifLogin = userManager.isLogin();
         }else {
             if(ifLogin&&application.isIfUserInfoChange()){
                 getData();
@@ -136,6 +140,7 @@ public class MainActivity extends AppCompatActivity
     protected void onPause() {
         // TODO Auto-generated method stub
         super.onPause();
+        Logger.d("MainActivity--onPause");
         MobclickAgent.onPause(this);
         JPushInterface.onPause(this);
     }
@@ -333,7 +338,7 @@ public class MainActivity extends AppCompatActivity
 
     private void getData() {
         // TODO Auto-generated method stub
-        Logger.d("MainActivity--getdata--user="+user.toString());
+        Logger.d("MainActivity--getdata--user="+user);
         if (userManager.isLogin()) {
             user = userManager.getUser();
             if (user==null || StringUtils.isNull(user.getUsername())) {

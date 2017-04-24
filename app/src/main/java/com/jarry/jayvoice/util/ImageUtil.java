@@ -39,7 +39,7 @@ public class ImageUtil {
             if (imageUrl.endsWith(".gif")){
                 Glide.with(context).load(imageUrl).asGif().into(imageView);
             }else {
-                Glide.with(context).load(imageUrl).thumbnail(0.2f).centerCrop().into(imageView);
+                Glide.with(context).load(imageUrl).centerCrop().into(imageView);
             }
         } else {
             imageView.setImageResource(nullImgId);
@@ -52,7 +52,6 @@ public class ImageUtil {
             if (imageUrl.endsWith(".gif")){
                 Glide.with(context).load(imageUrl).asGif().override(scaleSize[0],scaleSize[1]).into(imageView);
             }else {
-                Logger.d("setImg--imageUrl="+imageUrl+";imageView.width="+imageView.getWidth());
                 Glide.with(context).load(imageUrl).thumbnail(0.1f).override(scaleSize[0],scaleSize[1]).centerCrop().into(imageView);
             }
         } else {

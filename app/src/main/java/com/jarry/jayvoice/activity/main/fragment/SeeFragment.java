@@ -31,7 +31,7 @@ public class SeeFragment extends AdFragment implements MainInterf.SeeChild{
 	private MainInterf.MainView mainView;
 
 	public SeeFragment(){
-		Logger.d("SeeFragment--SeeFragment()");
+
 	}
 
 	@Override
@@ -49,7 +49,6 @@ public class SeeFragment extends AdFragment implements MainInterf.SeeChild{
 	@Override
 	public void onResume() {
 		// TODO Auto-generated method stub
-		Logger.d("SeeFragment--onResume");
 		mainView.setEnableRefresh(true);
 		super.onResume();
 		if(ListUtil.isNotNull(activities)){
@@ -60,7 +59,6 @@ public class SeeFragment extends AdFragment implements MainInterf.SeeChild{
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
-		Logger.d("SeeFragment--onPause");
 		super.onPause();
 		clearAdHandler();
 	}
@@ -68,19 +66,16 @@ public class SeeFragment extends AdFragment implements MainInterf.SeeChild{
 	@Override
 	public void onDetach() {
 		super.onDetach();
-		Logger.d("SeeFragment--onDetach");
 	}
 
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
-		Logger.d("SeeFragment--onDestroyView");
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		Logger.d("SeeFragment--onDestroy");
 	}
 
 	@Override
