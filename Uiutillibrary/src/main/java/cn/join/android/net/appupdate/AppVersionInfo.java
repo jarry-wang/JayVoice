@@ -25,4 +25,9 @@ public class AppVersionInfo {
     public void setNeedUpgrade(boolean needUpgrade) {
         this.needUpgrade = needUpgrade;
     }
+
+    @Override
+    public String toString() {
+        return "AppVersionInfo{versionName:"+versionName+";versionCode="+versionCode+"}";
+    }
 }

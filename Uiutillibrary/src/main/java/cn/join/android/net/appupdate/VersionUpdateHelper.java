@@ -13,6 +13,7 @@ import android.util.Log;
 import java.io.File;
 
 import cn.join.android.net.util.NetUtil;
+import cn.join.android.util.StringUtils;
 import cn.join.android.util.ToastUtil;
 
 /**
@@ -39,10 +40,36 @@ public class VersionUpdateHelper {
 
     private AppVersionInfo versionInfo;
 
+    private GetAppVersionInterface getAppVersionInterface;
 
+    public interface GetAppVersionCallback {
+        void onsuccess(AppVersionInfo versionInfo);
+        void onError();
+    }
+
+    public interface GetAppVersionInterface {
+        void getVersionInfo(GetAppVersionCallback callback);
+    }
+    /**
+     * 通过配置文件.xml初始化
+     * @param context
+     * @param url
+     */
     public VersionUpdateHelper(Context context,String url) {
         this.context = context;
         this.appVersionUrl = url;
+        this.versionInfo = null;
+    }
+
+    /**
+     * 通过app自己的方式获取版本信息
+     * @param context
+     * @param getAppVersionInterface
+     */
+    public VersionUpdateHelper(Context context,GetAppVersionInterface getAppVersionInterface) {
+        this.context = context;
+        this.appVersionUrl = null;
+        this.getAppVersionInterface = getAppVersionInterface;
     }
 
     ServiceConnection serviceConnection = new ServiceConnection() {
@@ -136,7 +163,23 @@ public class VersionUpdateHelper {
                 }
             });
             Log.d(TAG,"--onServiceConnected--");
-            mService.doCheckUpdateTask(appVersionUrl);
+            if (getAppVersionInterface != null && StringUtils.isNull(appVersionUrl)) {
+                getAppVersionInterface.getVersionInfo(new GetAppVersionCallback() {
+                    @Override
+                    public void onsuccess(AppVersionInfo versionInfo) {
+                        if (mService !=null)
+                            mService.readFilesuccess(versionInfo);
+                    }
+
+                    @Override
+                    public void onError() {
+                        if (mService !=null)
+                            mService.readFail();
+                    }
+                });
+            }else {
+                mService.doCheckUpdateTask(appVersionUrl);
+            }
         }
 
         @Override
@@ -244,4 +287,5 @@ public class VersionUpdateHelper {
         if (ifToastInfo)
             toastUtil.showToast(info);
     }
+
 }

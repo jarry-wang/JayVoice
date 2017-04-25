@@ -2,8 +2,8 @@ package com.jarry.jayvoice;
 
 import java.util.List;
 
-import a.b.c.CommonManager;
 import cn.bmob.v3.Bmob;
+import cn.join.android.net.appupdate.AppVersionInfo;
 import cn.jpush.android.api.JPushInterface;
 import com.jarry.jayvoice.bean.Playlist;
 import com.jarry.jayvoice.bean.SType;
@@ -18,7 +18,6 @@ import com.jarry.jayvoice.util.Logger;
 import com.jarry.jayvoice.util.SharedPrefUtil;
 import com.jarry.jayvoice.util.StringUtils;
 
-import a.b.c.DynamicSdkManager;
 import android.app.Application;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -98,6 +97,8 @@ public class MyApplication extends Application{
 	
 	private List<Song> collectionSongs;
 
+	private AppVersionInfo appVersionInfo;
+
 	
 	public static MyApplication getInstance() {
 		return instance;
@@ -110,18 +111,8 @@ public class MyApplication extends Application{
 		Logger.d("MyApplication--oncreate");
 		instance = this;
 		prefUtil = SharedPrefUtil.getInstance(this);
-		//有米广告
-		CommonManager.getInstance(this).init("04ae730e20cffd38", "7b68518189d403e9", false);
 		//bmob初始化
 		Bmob.initialize(this, "9a74543266e5a754c4de1d129c51cf6e");
-
-		DynamicSdkManager.getInstance(this).loadInDate("2015-06-06");
-		try {
-			// appId和APPsecret设置在manifest上时调用此方法
-			DynamicSdkManager.onCreate(this);
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
 		JPushInterface.setDebugMode(false); 	// 设置开启日志,发布时请关闭日志
         JPushInterface.init(this);     		// 初始化 JPush
 	}
@@ -413,7 +404,11 @@ public class MyApplication extends Application{
 		this.ifPlayChange = ifPlayChange;
 	}
 
-	
-	
-	
+	public AppVersionInfo getAppVersionInfo() {
+		return appVersionInfo;
+	}
+
+	public void setAppVersionInfo(AppVersionInfo appVersionInfo) {
+		this.appVersionInfo = appVersionInfo;
+	}
 }

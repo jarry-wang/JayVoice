@@ -20,13 +20,9 @@ import com.jarry.jayvoice.widget.SpacesItemDecoration;
 import com.jarry.jayvoice.widget.WebView4Scroll;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
-
-import a.b.c.DynamicSdkManager;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Parcelable;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
@@ -363,11 +359,11 @@ public class FindFragment extends BaseFragment implements MainInterf.FindChild{
 					getAlbumData();
 					break;
 				case 1:
-					View banner = DynamicSdkManager.getInstance(mActivity).getBanner(mActivity);
-					LinearLayout adLayout=(LinearLayout)rootView.findViewById(R.id.adLayout);
-					adLayout.removeAllViews();
-					if(banner!=null)
-						adLayout.addView(banner);
+//					View banner = DynamicSdkManager.getInstance(mActivity).getBanner(mActivity);
+//					LinearLayout adLayout=(LinearLayout)rootView.findViewById(R.id.adLayout);
+//					adLayout.removeAllViews();
+//					if(banner!=null)
+//						adLayout.addView(banner);
 					picRecyclerView = (RecyclerView) rootView.findViewById(R.id.pic_recyclerView);
 					StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
 					picRecyclerView.setLayoutManager(staggeredGridLayoutManager);

@@ -125,8 +125,8 @@ public class PlayMainFragment extends BaseFragment implements MainInterf.PlayMai
 		isLive = true;
 		userManager = UserManager.getInstance(getActivity());
 		MyApplication.getInstance().setPlayerEngineListener(mPlayerEngineListener);
-		regToQQ();
 		regToWx();
+		regToQQ();
 		qqUtil = new QQUtil(mActivity, mTencent);
 		weixinUtil = new WeixinUtil(mActivity, iwxapi);
 		initAnim();

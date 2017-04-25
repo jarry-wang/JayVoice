@@ -5,12 +5,8 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -33,20 +29,13 @@ import com.jarry.jayvoice.activity.main.core.FragmentManagerImpl;
 import com.jarry.jayvoice.activity.main.core.MainNavView;
 import com.jarry.jayvoice.activity.main.interf.MainInterf;
 import com.jarry.jayvoice.bean.User;
-import com.jarry.jayvoice.core.DataBusiness;
 import com.jarry.jayvoice.core.GetDataBusiness;
-import com.jarry.jayvoice.activity.main.fragment.BaseFragment;
-import com.jarry.jayvoice.activity.main.fragment.FindFragment;
-import com.jarry.jayvoice.activity.main.fragment.MeFragment;
-import com.jarry.jayvoice.activity.main.fragment.PlayMainFragment;
-import com.jarry.jayvoice.activity.main.fragment.SeeFragment;
 import com.jarry.jayvoice.core.UserManager;
 import com.jarry.jayvoice.util.ImageUtil;
 import com.jarry.jayvoice.util.Logger;
 import com.jarry.jayvoice.util.StringUtils;
 import com.umeng.analytics.MobclickAgent;
-
-import a.b.c.DynamicSdkManager;
+import cn.join.android.net.appupdate.VersionUpdateHelper;
 import cn.join.android.net.imgcache.ImageFetcher;
 import cn.join.android.net.imgcache.SharedImageFetcher;
 import cn.join.android.ui.widget.SuperRefreshLayout;
@@ -73,7 +62,8 @@ public class MainActivity extends AppCompatActivity
     private MainInterf.SeeChild seeChild;
     private MainInterf.FindChild findChild;
     public final static String CALL_TYPE = "CALL_TYPE";
-
+    private VersionUpdateHelper versionUpdateHelper;
+    private GetDataBusiness getDataBusiness;
     @Override
     public void setPlayMainChild(MainInterf.PlayMainChild playMainChild) {
         this.playMainChild = playMainChild;
@@ -97,7 +87,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         application = (MyApplication) this.getApplicationContext();
         userManager = UserManager.getInstance(this);
-        checkUpdata();
+        getDataBusiness = new GetDataBusiness(this);
         initMainView();
         initUtil();
         initFragment();
@@ -121,6 +111,15 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
         Logger.d("MainActivity--onResume-ifLogin="+ifLogin+";userManager.isLogin()="+userManager.isLogin());
         MobclickAgent.onResume(this);
+        if (versionUpdateHelper == null) {
+            versionUpdateHelper = new VersionUpdateHelper(this, new VersionUpdateHelper.GetAppVersionInterface() {
+                @Override
+                public void getVersionInfo(VersionUpdateHelper.GetAppVersionCallback callback) {
+                    getDataBusiness.getApkInfo(callback);
+                }
+            });
+        }
+        versionUpdateHelper.startUpdate();
         if (ifLogin != userManager.isLogin()) {
             getData();
             ifLogin = userManager.isLogin();
@@ -143,6 +142,9 @@ public class MainActivity extends AppCompatActivity
         Logger.d("MainActivity--onPause");
         MobclickAgent.onPause(this);
         JPushInterface.onPause(this);
+        if (versionUpdateHelper != null) {
+            versionUpdateHelper.stopUpdate();
+        }
     }
 
     @Override
@@ -185,7 +187,6 @@ public class MainActivity extends AppCompatActivity
          */
         SelectSong,
     }
-    boolean isSDKLoadComplete = false;
     int checkId;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -214,8 +215,6 @@ public class MainActivity extends AppCompatActivity
 
 
     private void initUtil() {
-        isSDKLoadComplete = DynamicSdkManager.getInstance(this).isDexLoadCompleted();
-        DynamicSdkManager.getInstance(this).initNormalAd();
         mFetcher = SharedImageFetcher.getSharedFetcher(this);
         fragmentManager = new FragmentManagerImpl(this,this);
     }

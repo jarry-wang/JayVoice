@@ -1,19 +1,15 @@
 package com.jarry.jayvoice.activity;
 
 
-import cn.bmob.v3.Bmob;
 import cn.join.android.Logger;
 
 import com.jarry.jayvoice.activity.main.MainActivity;
 import com.jarry.jayvoice.R;
 import com.jarry.jayvoice.core.UserManager;
 
-import a.b.c.CommonManager;
-import a.b.c.DynamicSdkManager;
-import a.b.c.listener.INtpResultListener;
 import android.os.Bundle;
 
-public class EnterActivity extends BaseActivity implements INtpResultListener{
+public class EnterActivity extends BaseActivity{
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -25,9 +21,8 @@ public class EnterActivity extends BaseActivity implements INtpResultListener{
 			prefUtil.saveInstallInfo(true);
 		}	
 		if(checkLogin()){
-			DynamicSdkManager.getInstance(this).showSplash(this, MainActivity.class);
-//			gotoActivity(MainActivity.class);
-//			this.finish();
+			gotoActivity(MainActivity.class);
+			this.finish();
 		}
 
 	}
@@ -68,30 +63,10 @@ public class EnterActivity extends BaseActivity implements INtpResultListener{
 		return R.layout.activity_enter;
 	}
 
-	@Override
-	public void onCheckNtpFinish(boolean arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	/**
-	 */
-//	@Override
-//	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//		super.onActivityResult(requestCode, resultCode, data);
-//
-//		if (resultCode == 10045) {
-//			Intent intent = new Intent(EnterActivity.this, MainActivity.class);
-//			startActivity(intent);
-//			finish();
-//		}
-//	}
 	
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
-		DynamicSdkManager.getInstance(this).onDestroy(this);
-		DynamicSdkManager.getInstance(this).onAppDestroy();
 		super.onDestroy();
 	}
 }

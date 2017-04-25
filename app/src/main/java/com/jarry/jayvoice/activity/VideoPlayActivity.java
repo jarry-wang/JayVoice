@@ -14,10 +14,6 @@ import com.jarry.jayvoice.core.MediaControl;
 import com.jarry.jayvoice.core.MediaControlListner;
 import com.jarry.jayvoice.media.PlayerEngine;
 import com.jarry.jayvoice.util.StringUtils;
-
-import a.b.c.DynamicSdkManager;
-import a.b.c.listener.IVideoAdListener;
-import a.b.c.listener.IVideoAdRequestListener;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -81,7 +77,7 @@ public class VideoPlayActivity extends BaseActivity implements OnPreparedListene
     private ImageButton fullScreenIb;
     private Vedio mVedio;
     int videoTypeId;
-    boolean ifPlayAd;
+//    boolean ifPlayAd;
 
 
     private PlayerEngine getPlayerEngine(){
@@ -101,29 +97,31 @@ public class VideoPlayActivity extends BaseActivity implements OnPreparedListene
         mediaControl = new MediaControl(this,mediaControlListner);
         mVedio = (Vedio) getIntent().getSerializableExtra("video");
         mIsHwDecode = getIntent().getBooleanExtra("isHW", false);
-        DynamicSdkManager.getInstance(this).initNormalAd();
+        doHasAdVideo(false);
+
+//        DynamicSdkManager.getInstance(this).initNormalAd();
         // 请求视频广告
-        if(mVedio!=null&&mVedio.typeId == 5){
-            doHasAdVideo(false);
-        }else{
-            Log.d("videoPlay","requestVideoAd-start");
-            DynamicSdkManager.getInstance(this).requestVideoAd(new IVideoAdRequestListener() {
-
-                @Override
-                public void onRequestSucceed() {
-                    Log.e("videoPlay", "request success");
-                    if(!ifPlayAd)
-                        doHasAdVideo(true);
-                }
-
-                @Override
-                public void onRequestFail(int errorCode) {
-                    // 关于错误码的解读：-1为网络连接失败，请检查网络。-2007为无广告，-3312为该设备一天的播放次数已完。
-                    Log.e("videoPlay", "request fail,errorCode is " + errorCode);
-                    doHasAdVideo(false);
-                }
-            });
-        }
+//        if(mVedio!=null&&mVedio.typeId == 5){
+//            doHasAdVideo(false);
+//        }else{
+//            Log.d("videoPlay","requestVideoAd-start");
+//            DynamicSdkManager.getInstance(this).requestVideoAd(new IVideoAdRequestListener() {
+//
+//                @Override
+//                public void onRequestSucceed() {
+//                    Log.e("videoPlay", "request success");
+//                    if(!ifPlayAd)
+//                        doHasAdVideo(true);
+//                }
+//
+//                @Override
+//                public void onRequestFail(int errorCode) {
+//                    // 关于错误码的解读：-1为网络连接失败，请检查网络。-2007为无广告，-3312为该设备一天的播放次数已完。
+//                    Log.e("videoPlay", "request fail,errorCode is " + errorCode);
+//                    doHasAdVideo(false);
+//                }
+//            });
+//        }
 
     }
 
@@ -167,35 +165,35 @@ public class VideoPlayActivity extends BaseActivity implements OnPreparedListene
     private void showAdVideo() {
         // TODO Auto-generated method stub
         Log.d("videoPlay", "showAdVideo--in");
-        DynamicSdkManager.getInstance(this).showVideo(this, new IVideoAdListener() {
-
-            @Override
-            public void onVideoPlayInterrupt() {
-                Log.e("videoPlay", "interrupt");
-                ifPlayAd = true;
-                VideoPlayActivity.this.finish();
-            }
-
-            @Override
-            public void onVideoPlayFail() {
-                Log.e("videoPlay", "failed");
-                ifPlayAd = true;
-                VideoPlayActivity.this.finish();
-            }
-
-            @Override
-            public void onVideoPlayComplete() {
-                Log.e("videoPlay", "complete");
-                ifPlayAd = true;
-                doHasAdVideo(false);
-            }
-
-            @Override
-            public void onVideoCallback(boolean callback) {
-                Log.e("videoPlay", "completeEffect:" + callback);
-                ifPlayAd = true;
-            }
-        });
+//        DynamicSdkManager.getInstance(this).showVideo(this, new IVideoAdListener() {
+//
+//            @Override
+//            public void onVideoPlayInterrupt() {
+//                Log.e("videoPlay", "interrupt");
+//                ifPlayAd = true;
+//                VideoPlayActivity.this.finish();
+//            }
+//
+//            @Override
+//            public void onVideoPlayFail() {
+//                Log.e("videoPlay", "failed");
+//                ifPlayAd = true;
+//                VideoPlayActivity.this.finish();
+//            }
+//
+//            @Override
+//            public void onVideoPlayComplete() {
+//                Log.e("videoPlay", "complete");
+//                ifPlayAd = true;
+//                doHasAdVideo(false);
+//            }
+//
+//            @Override
+//            public void onVideoCallback(boolean callback) {
+//                Log.e("videoPlay", "completeEffect:" + callback);
+//                ifPlayAd = true;
+//            }
+//        });
     }
 
     private void initVideoInfo(Vedio mVedio) {
@@ -523,7 +521,7 @@ public class VideoPlayActivity extends BaseActivity implements OnPreparedListene
         public void pause() {
             // TODO Auto-generated method stub
             mVV.pause();
-            DynamicSdkManager.getInstance(mContext).showSpot(mContext);
+//            DynamicSdkManager.getInstance(mContext).showSpot(mContext);
         }
 
         @Override

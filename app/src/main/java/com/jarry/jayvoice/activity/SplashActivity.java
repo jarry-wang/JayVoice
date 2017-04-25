@@ -2,7 +2,6 @@ package com.jarry.jayvoice.activity;
 
 import com.jarry.jayvoice.activity.main.MainActivity;
 
-import a.b.c.DynamicSdkManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +13,7 @@ public class SplashActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		// 展示开屏广告
-		DynamicSdkManager.getInstance(this).showSplash(this, MainActivity.class);
+//		DynamicSdkManager.getInstance(this).showSplash(this, MainActivity.class);
 
 	}
 

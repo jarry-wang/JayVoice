@@ -6,6 +6,7 @@ import com.jarry.jayvoice.MyApplication;
 import com.jarry.jayvoice.R;
 import com.jarry.jayvoice.bean.About;
 import com.jarry.jayvoice.bean.Album;
+import com.jarry.jayvoice.bean.Apk;
 import com.jarry.jayvoice.bean.BaseBean;
 import com.jarry.jayvoice.bean.Collect;
 import com.jarry.jayvoice.bean.FeedBack;
@@ -19,6 +20,7 @@ import com.jarry.jayvoice.bean.User;
 import com.jarry.jayvoice.bean.Vedio;
 
 import com.jarry.jayvoice.util.ListUtil;
+import com.jarry.jayvoice.util.Logger;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobQuery.CachePolicy;
@@ -27,6 +29,8 @@ import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
+import cn.join.android.net.appupdate.AppVersionInfo;
+import cn.join.android.net.appupdate.VersionUpdateHelper;
 import cn.join.android.util.ToastUtil;
 
 import android.app.Activity;
@@ -474,6 +478,37 @@ public class GetDataBusiness {
 				}
 			}
 		});	
+	}
+
+	/**
+	 * 获取app信息
+	 */
+	public void getApkInfo(final VersionUpdateHelper.GetAppVersionCallback callback){
+		BmobQuery<Apk> apkBmobQuery = new BmobQuery<>();
+		apkBmobQuery.setCachePolicy(CachePolicy.NETWORK_ONLY);
+		Logger.d("获取app信息");
+		apkBmobQuery.findObjects(new FindListener<Apk>() {
+			@Override
+			public void done(List<Apk> list, BmobException e) {
+				if (e == null) {
+					Logger.d("获取app信息:"+list.size());
+					if(ListUtil.isNotNull(list)){
+						Apk apkInfo = list.get(0);
+						AppVersionInfo appVersionInfo = new AppVersionInfo();
+						appVersionInfo.versionName = apkInfo.versionName;
+						appVersionInfo.versionCode = apkInfo.versionCode;
+						appVersionInfo.versionInfo = apkInfo.versionInfo;
+						appVersionInfo.filePath = apkInfo.apkUrl;
+						appVersionInfo.ifForceUpdate = apkInfo.ifForceUpdate;
+						Logger.d("获取app信息:"+appVersionInfo);
+						callback.onsuccess(appVersionInfo);
+					}
+				}else {
+					doError(e.getErrorCode(),e.getMessage());
+					callback.onError();
+				}
+			}
+		});
 	}
 	
 	/**

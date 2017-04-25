@@ -2,7 +2,7 @@
 <news>  
     <versionName>1.1</versionName>
     <versionCode>2</versionCode>
-    <detail>1、1.1版本</detail>
+    <detail>1、1.1版本&#x000A;2、细节优化</detail>
     <ifForceUpdate>1</ifForceUpdate>
     <filePath>http://192.168.1.100:8888/android/mlf.apk</filePath>
 </news>  

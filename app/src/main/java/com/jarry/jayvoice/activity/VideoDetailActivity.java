@@ -1,12 +1,10 @@
 package com.jarry.jayvoice.activity;
 
-import a.b.c.DynamicSdkManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jarry.jayvoice.R;
@@ -69,10 +67,10 @@ public class VideoDetailActivity extends BaseActivity{
 		infoStyleTv.setText("类型："+mVedio.style);
 		if(StringUtils.isNotNull(mVedio.desc))
 			infoDescTv.setText(Html.fromHtml(mVedio.desc));
-		View banner = DynamicSdkManager.getInstance(this).getBanner(this);
-	    LinearLayout adLayout=(LinearLayout)findViewById(R.id.adLayout);		
-	    if(banner!=null)
-	    	adLayout.addView(banner);
+//		View banner = DynamicSdkManager.getInstance(this).getBanner(this);
+//	    LinearLayout adLayout=(LinearLayout)findViewById(R.id.adLayout);
+//	    if(banner!=null)
+//	    	adLayout.addView(banner);
 	}
 	
 	@Override
