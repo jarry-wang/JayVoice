@@ -7,8 +7,8 @@ android {
         applicationId "com.jarry.jayvoice"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 10
-        versionName "1.7"
+        versionCode 11
+        versionName "2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         ndk {
@@ -54,7 +54,9 @@ android {
         checkReleaseBuilds false
         abortOnError false
     }
+
 }
+
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
@@ -65,9 +67,14 @@ dependencies {
     // 此处以JPush 3.0.0 版本为例。
     // 此处以JCore 1.0.0 版本为例。
     compile files('libs/cyberplayer-sdk.jar')
+<<<<<<< HEAD
     compile files('libs/ym_v5.2.4.jar')
     compile files('libs/open_sdk_r5788_lite.jar')
     compile files('libs/BmobSDK_3.5.5_20170420.jar')
+=======
+    compile files('libs/BmobSDK_3.5.5_20170420.jar')
+    compile files('libs/open_sdk_r5788_lite.jar')
+>>>>>>> origin/master
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.orhanobut:logger:1.11'
@@ -79,5 +86,4 @@ dependencies {
     compile 'org.apache.httpcomponents:httpcore:4.4.2'
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    testCompile 'junit:junit:4.12'
 }

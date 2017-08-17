@@ -201,6 +201,7 @@ public class PlayMainFragment extends BaseFragment implements MainInterf.PlayMai
 		tyWheelView.addScrollingListener( new OnWheelScrollListener() {
 			public void onScrollingStarted(WheelView wheel) {
 				scrolling = true;
+				mainView.setEnableRefresh(false);
 			}
 			public void onScrollingFinished(WheelView wheel) {
 				scrolling = false;
@@ -209,6 +210,7 @@ public class PlayMainFragment extends BaseFragment implements MainInterf.PlayMai
 				message.what = UPDATA_TYPE;
 				message.arg1 = tyWheelView.getCurrentItem();
 				mHandler.sendMessage(message);
+				mainView.setEnableRefresh(true);
 			}
 		});
 		picPlayView.setOnClickListener(PlayMainFragment.this);
@@ -496,7 +498,7 @@ public class PlayMainFragment extends BaseFragment implements MainInterf.PlayMai
 	
 	public void SerchLrc(BmobFile lyric) {
 		hasSearchLrc = true;
-		if(lyric.getFileUrl()!=null){
+		if(lyric!=null && lyric.getFileUrl()!=null){
 			LyricView.readParse(lyric.getFileUrl());
 			mHandler.sendEmptyMessage(UPDATA_LRC);
 		}           
