@@ -36,9 +36,9 @@ android {
     signingConfigs {
         debug {
             try {
-                storeFile file("E:/android-workspace/jayvoice.keystore")
+                storeFile file("E:/android_apace/jayvoice.keystore")
                 storePassword DEBUG_KEYSTORE_PWD
-                keyAlias "jarryjay"
+                keyAlias "androiddebugkey"
                 keyPassword DEBUG_KEY_PWD
             } catch (ex) {
                 throw new InvalidUserDataException("you should define DEBUG_KEYSTORE_PWD and DEBUG_KEY_PWD")
@@ -64,10 +64,10 @@ dependencies {
     compile project(':Uiutillibrary')
     // 此处以JPush 3.0.0 版本为例。
     // 此处以JCore 1.0.0 版本为例。
-    compile files('libs/BmobSDK_V3.2.8_0105.jar')
     compile files('libs/cyberplayer-sdk.jar')
     compile files('libs/ym_v5.2.4.jar')
-    compile files('libs/open_sdk_r5043_lite.jar')
+    compile files('libs/open_sdk_r5788_lite.jar')
+    compile files('libs/BmobSDK_3.5.5_20170420.jar')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.orhanobut:logger:1.11'
